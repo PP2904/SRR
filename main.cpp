@@ -194,7 +194,7 @@ int main() {
         cout << "Für Bidder " << i << " greatest MBB " << "\n";
         for (int j = 0; j < num_goods; ++j) {
 
-            for (const mytuple &p: mbbVec[i]) {
+            for (mytuple &p: mbbVec[i]) {
 
                 cout  << " for good " << p.second << " is: " << p.first << "\n";
             }
@@ -229,7 +229,7 @@ int main() {
         for (int j = 0; j < num_goods; ++j) {
 
             for (const mytuple &p: mbbVec[i]) {
-
+                //TODO: gehe zu nächstem MBB-Item in mbbVec; aber wie?
                 if (j == (p.second)) {
 
                     if (quantItem[j] != 0 && bidders[i].budget != 0) {
@@ -249,7 +249,7 @@ int main() {
 
                     if (quantItem[j] == 0) {
                         //TODO: gehe zu nächstem MBB-Item in mbbVec; aber wie?
-
+                          
 
 
 
