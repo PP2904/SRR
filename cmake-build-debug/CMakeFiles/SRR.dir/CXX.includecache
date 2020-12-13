@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/main.cpp
+iostream
+-
+vector
+-
+fstream
+-
+chrono
+-
+random
+-
+list
+-
+iomanip
+-
+stdlib.h
+-
+utility
+-
+map
+-
+algorithm
+-
+

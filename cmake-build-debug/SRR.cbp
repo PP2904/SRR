@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="SRR"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SRR">
+				<Option output="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/SRR" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 SRR"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SRR/fast">
+				<Option output="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/SRR" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 SRR/fast"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/main.cpp">
+			<Option target="SRR"/>
+		</Unit>
+		<Unit filename="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
