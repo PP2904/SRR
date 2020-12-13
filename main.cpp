@@ -83,7 +83,7 @@ int main() {
         bidders[k].valuation.resize(num_goods);
         //valuation pro Gut und Bidder
         for (auto &v: bidders[k].valuation) v = (random_number(4, 12));
-        bidders[k].budget = 1;
+        bidders[k].budget = 4;
     }
 
     //prices goods randomly initiated
@@ -175,14 +175,21 @@ int main() {
     //alloc mbb items
     vector<vector<double>> mbbItemAllocVec(num_bidders, vector<double>(num_goods));
 
+    //spending vector  for spending graph Q(x)
+    vector<vector<double>> spendVec(num_bidders, vector<double>(num_goods));
+
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
             if (j == (greatestMBB[i].second)) {
                 if (quantItem[j] != 0 && bidders[i].budget != 0) {
+                    //allocation
                     mbbItemAllocVec[i][j] = bidders[i].budget / prices[greatestMBB[i].second];
+                    //spending
+                    spendVec[i][j] = bidders[i].budget / prices[greatestMBB[i].second];
                     //item wurde vekauft und muss daher dezimiert werden
                     quantItem[j] = quantItem[j] - (bidders[i].budget / prices[greatestMBB[i].second]);
-                    //stimm das mit dem budget abzug so?:                                                       
+                    //stimm das mit dem budget abzug so?
+                    // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
                     bidders[i].budget = bidders[i].budget - (bidders[i].budget / prices[greatestMBB[i].second]);
                     continue;
                 }
