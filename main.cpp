@@ -82,18 +82,30 @@ int main() {
     for (int k = 0; k < num_bidders; ++k) {
         bidders[k].valuation.resize(num_goods);
         //valuation pro Gut und Bidder
-        for (auto &v: bidders[k].valuation) v = (random_number(4, 12));
-        bidders[k].budget = 4;
+        //for (auto &v: bidders[k].valuation){
+        for(i=0; i < num_goods; i++){
+               bidders[k].valuation[i] = (random_number(1, 12));
+        }
+        bidders[k].budget = 1;
     }
+
+    //Idee 1: prices müssen zwischen 0 und 1 liegen, außer bei einem Gut
 
     //prices goods randomly initiated
     vector<double> prices(num_goods);
 
     for (int k = 0; k < num_goods; ++k) {
+
+        //Test, ein Gut ist deutlich teurer als die andern
+        if(k==(num_goods-1)){
+          prices[k] = 1;
+            continue;
+        }
+
+        prices[k] = double((random_number(6, 10))) / (random_number(10, 40));
         //prices darf nicht 0 sein !!!
-        prices[k] = double((random_number(6, 10))) / (random_number(1, 8));
         if (prices[k] == 0) {
-            prices[k] = double((random_number(6, 10))) / (random_number(1, 8));
+            prices[k] = double((random_number(6, 10))) / (random_number(10, 50));
         }
 
     }
@@ -115,6 +127,15 @@ int main() {
     for (int i = 0; i < num_bidders; ++i) {
         cout << "Bidder: " << i << "\n";
         for (int j = 0; j < num_goods; ++j) {
+
+            //test: 1 bidder bewertet das künstlich veränderte teuerste Gut als besonders wertvoll
+            if(i==(num_bidders-(num_bidders-1)) && j == (num_goods-1))
+            {
+                mbb = 100;
+                mbbVec[j] = make_pair(mbb, j);
+                continue;
+            }
+            
             mbb = bidders[i].valuation[j] / prices[j];
             mbbVec[j] = make_pair(mbb, j);
             // cout << "Bidder " << i << " MBB for Good " << j << " is: " << bidders[i].valuation[j]/prices[j] << "\n";
@@ -130,7 +151,6 @@ int main() {
 
 
     }
-
 
     //for debugging
     cout << "\n";
@@ -180,7 +200,9 @@ int main() {
 
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
+
             if (j == (greatestMBB[i].second)) {
+
                 if (quantItem[j] != 0 && bidders[i].budget != 0) {
                     //allocation
                     mbbItemAllocVec[i][j] = bidders[i].budget / prices[greatestMBB[i].second];
@@ -193,6 +215,7 @@ int main() {
                     bidders[i].budget = bidders[i].budget - (bidders[i].budget / prices[greatestMBB[i].second]);
                     continue;
                 }
+
                 if (bidders[i].budget == 0) continue;
 
                 if (quantItem[j] == 0) {
@@ -203,7 +226,10 @@ int main() {
                     continue;
                 }
 
-            } else {
+            }
+
+            //falls noch nicht gilt, dass j == (greatestMBB[i].second)  
+            else {
                 continue;
             }
 
