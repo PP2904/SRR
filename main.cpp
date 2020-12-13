@@ -228,45 +228,32 @@ int main() {
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
 
-            for (const mytuple &p: mbbVec[i]) {
                 //TODO: gehe zu nächstem MBB-Item in mbbVec; aber wie?
-                if (j == (p.second)) {
+
 
                     if (quantItem[j] != 0 && bidders[i].budget != 0) {
-                        //allocation
-                        mbbItemAllocVec[i][j] = bidders[i].budget / prices[p.second];
-                        //spending
-                        spendVec[i][j] = bidders[i].budget / prices[p.second];
-                        //item wurde vekauft und muss daher dezimiert werden
-                        quantItem[j] = quantItem[j] - (bidders[i].budget / prices[p.second]);
-                        //stimm das mit dem budget abzug so?
-                        // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
-                        bidders[i].budget = bidders[i].budget - (bidders[i].budget / prices[p.second]);
-                        continue;
+                        for (const mytuple &p: mbbVec[i]) {
+                            //allocation
+                            mbbItemAllocVec[i][j] = bidders[i].budget / prices[p.second];
+                            //spending
+                            spendVec[i][j] = bidders[i].budget / prices[p.second];
+                            //item wurde vekauft und muss daher dezimiert werden
+                            quantItem[j] = quantItem[j] - (bidders[i].budget / prices[p.second]);
+                            //stimm das mit dem budget abzug so?
+                            // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
+                            bidders[i].budget = bidders[i].budget - (bidders[i].budget / prices[p.second]);
+                            continue;
+                        }
+                        //sehr wichtig!
+                        break;
                     }
 
                     if (bidders[i].budget == 0) continue;
 
-                    if (quantItem[j] == 0) {
+                    if (quantItem[j] == 0 && bidders[i].budget != 0) {
                         //TODO: gehe zu nächstem MBB-Item in mbbVec; aber wie?
-                          
-
-
-
-
-                        //mbbItemAllocVec[i][j] = 12.34;
-                        continue;
+                        mbbItemAllocVec[i][j] = 99;
                     }
-
-                }
-
-                    //falls noch nicht gilt, dass j == (greatestMBB[i].second)
-                else {
-                    continue;
-                }
-            }
-            //sehr wichtig!
-            break;
 
         }
     }
