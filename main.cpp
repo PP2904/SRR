@@ -117,12 +117,13 @@ int main() {
     //berechnen MBB pro Bidder
 
     //alloc in mbb-graph
-    vector<vector<double>> mbbAllocVec(num_bidders, vector<double>(num_goods));
+    //vector<vector<double>> mbbAllocVec(num_bidders, vector<double>(num_goods));
 
     //tuple: (number good, mbb)
     typedef pair<double, int> mytuple;
     double mbb = 0.0;
-    vector<mytuple> mbbVec(num_goods);
+    //vector Aufbau bspw: bidder 1: (0, mbb), (1,mbb), ...
+    vector<vector<mytuple>> mbbVec(num_bidders,vector<mytuple>(num_goods));
 
     for (int i = 0; i < num_bidders; ++i) {
         cout << "Bidder: " << i << "\n";
@@ -132,37 +133,46 @@ int main() {
             if(i==(num_bidders-(num_bidders-1)) && j == (num_goods-1))
             {
                 mbb = 100;
-                mbbVec[j] = make_pair(mbb, j);
+                mbbVec[i][j] = make_pair(mbb, j);
                 continue;
             }
             
             mbb = bidders[i].valuation[j] / prices[j];
-            mbbVec[j] = make_pair(mbb, j);
+            mbbVec[i][j] = make_pair(mbb, j);
             // cout << "Bidder " << i << " MBB for Good " << j << " is: " << bidders[i].valuation[j]/prices[j] << "\n";
         }
-        //sortiere mbb vector nach größe
-        sort(mbbVec.begin(), mbbVec.end(), greater<>());
+        //sortiere mbb vector nach größe bzgl. mbb wert (first value im tuple)
+        sort(mbbVec[i].begin(), mbbVec[i].end(), greater<>());
 
         //for debugging
-        for (const mytuple &p: mbbVec) {
+        //laufen über erste Reihe des mbbVec vectors und schauen alle Tuple an (p läuft durch Tuple in der ersten Reihe)
+        for (const mytuple &p: mbbVec[i]) {
             cout << "Gut " << p.second << " hat MBB von: " << p.first << " und kostet " << prices[p.second] << "\n";
-            mbbAllocVec[i][p.second] = p.first;
+            //mbbAllocVec[i][p.second] = p.first;
         }
 
 
     }
 
+
+
     //for debugging
     cout << "\n";
+    cout << "Die MBB Elemente in absteigender Reihenfolge pro Bidder: \n";
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            cout << mbbAllocVec[i][j] << " ";
+            //const iterator (läuft nur über das aktuelle mbbVec[i] = aktuelle Reihe i)
+            for (const mytuple &p: mbbVec[i]) {
+                cout << "(Element " << p.second << " mit MBB " << p.first  << " )" << " ";
+            }
+            //sehr wichtig!    
+            break; 
         }
         cout << "\n";
     }
 
-    //vector mit (größtem MBB,num_good) pro Bidder
-    vector<pair<double, int>> greatestMBB(num_bidders, make_pair(0, 0));
+  /*  //vector mit (größtem MBB,num_good) pro Bidder
+   vector<pair<double, int>> greatestMBB(num_bidders, make_pair(0, 0));
 
     cout << "\n";
     for (int i = 0; i < num_bidders; ++i) {
@@ -177,6 +187,23 @@ int main() {
 
     }
 
+    */
+
+    cout << "\n";
+    for (int i = 0; i < num_bidders; ++i) {
+        cout << "Für Bidder " << i << " greatest MBB " << "\n";
+        for (int j = 0; j < num_goods; ++j) {
+
+            for (const mytuple &p: mbbVec[i]) {
+
+                cout  << " for good " << p.second << " is: " << p.first << "\n";
+            }
+            //sehr wichtig!
+            break;
+
+        }
+
+    }
 
 
 
@@ -201,37 +228,45 @@ int main() {
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
 
-            if (j == (greatestMBB[i].second)) {
+            for (const mytuple &p: mbbVec[i]) {
 
-                if (quantItem[j] != 0 && bidders[i].budget != 0) {
-                    //allocation
-                    mbbItemAllocVec[i][j] = bidders[i].budget / prices[greatestMBB[i].second];
-                    //spending
-                    spendVec[i][j] = bidders[i].budget / prices[greatestMBB[i].second];
-                    //item wurde vekauft und muss daher dezimiert werden
-                    quantItem[j] = quantItem[j] - (bidders[i].budget / prices[greatestMBB[i].second]);
-                    //stimm das mit dem budget abzug so?
-                    // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
-                    bidders[i].budget = bidders[i].budget - (bidders[i].budget / prices[greatestMBB[i].second]);
-                    continue;
+                if (j == (p.second)) {
+
+                    if (quantItem[j] != 0 && bidders[i].budget != 0) {
+                        //allocation
+                        mbbItemAllocVec[i][j] = bidders[i].budget / prices[p.second];
+                        //spending
+                        spendVec[i][j] = bidders[i].budget / prices[p.second];
+                        //item wurde vekauft und muss daher dezimiert werden
+                        quantItem[j] = quantItem[j] - (bidders[i].budget / prices[p.second]);
+                        //stimm das mit dem budget abzug so?
+                        // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
+                        bidders[i].budget = bidders[i].budget - (bidders[i].budget / prices[p.second]);
+                        continue;
+                    }
+
+                    if (bidders[i].budget == 0) continue;
+
+                    if (quantItem[j] == 0) {
+                        //TODO: gehe zu nächstem MBB-Item in mbbVec; aber wie?
+
+
+
+
+
+                        //mbbItemAllocVec[i][j] = 12.34;
+                        continue;
+                    }
+
                 }
 
-                if (bidders[i].budget == 0) continue;
-
-                if (quantItem[j] == 0) {
-
-                    //TODO: gehe zu nächstem MBB-Item (leider hat greatestMBB nur die greatest MBBs...; müssen also mbbVec verwenden
-
-                    mbbItemAllocVec[i][j] = 12.34;
+                    //falls noch nicht gilt, dass j == (greatestMBB[i].second)
+                else {
                     continue;
                 }
-
             }
-
-            //falls noch nicht gilt, dass j == (greatestMBB[i].second)  
-            else {
-                continue;
-            }
+            //sehr wichtig!
+            break;
 
         }
     }
@@ -243,6 +278,7 @@ int main() {
         }
         cout << "\n";
     }
+
 
     return 0;
 }
