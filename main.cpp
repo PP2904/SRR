@@ -84,7 +84,7 @@ int main() {
         //valuation pro Gut und Bidder
         //for (auto &v: bidders[k].valuation){
         for (i = 0; i < num_goods; i++) {
-            bidders[k].valuation[i] = (random_number(1, 12));
+            bidders[k].valuation[i] = (random_number(0, 8));
         }
         bidders[k].budget = 1;
     }
@@ -96,11 +96,11 @@ int main() {
 
     for (int k = 0; k < num_goods; ++k) {
 
-        //Test, ein Gut ist deutlich teurer als die andern
+        /*//Test, ein Gut ist deutlich teurer als die andern
         if (k == (num_goods - 1)) {
             prices[k] = 1;
             continue;
-        }
+        }*/
 
         prices[k] = double((random_number(6, 10))) / (random_number(10, 40));
         //prices darf nicht 0 sein !!!
@@ -116,8 +116,16 @@ int main() {
 
     //berechnen MBB pro Bidder
 
-    //alloc in mbb-graph
-    //vector<vector<double>> mbbAllocVec(num_bidders, vector<double>(num_goods));
+
+
+    //number of interested bidder in same good j (=interGood vector)
+    vector <int> interGood(num_goods);
+
+    //initialize interGood vector
+    for(int j = 0; j < num_goods; ++j){
+        interGood[j] = 0;
+    }
+
 
     //tuple: (number good, mbb)
     typedef pair<double, int> mytuple;
@@ -129,14 +137,20 @@ int main() {
         cout << "Bidder: " << i << "\n";
         for (int j = 0; j < num_goods; ++j) {
 
-            //test: 1 bidder bewertet das künstlich veränderte teuerste Gut als besonders wertvoll
+           /* //test: 1 bidder bewertet das künstlich veränderte teuerste Gut als besonders wertvoll
             if (i == (num_bidders - (num_bidders - 1)) && j == (num_goods - 1)) {
                 mbb = 100;
                 mbbVec[i][j] = make_pair(mbb, j);
                 continue;
-            }
+            }*/
 
             mbb = bidders[i].valuation[j] / prices[j];
+
+            //interGood := Summe der Interessenten pro Gut
+            if(mbb != 0.0){
+                interGood[j] += 1;
+            }
+
             mbbVec[i][j] = make_pair(mbb, j);
             // cout << "Bidder " << i << " MBB for Good " << j << " is: " << bidders[i].valuation[j]/prices[j] << "\n";
         }
@@ -170,41 +184,24 @@ int main() {
         cout << "\n";
     }
 
-    /*  //vector mit (größtem MBB,num_good) pro Bidder
-     vector<pair<double, int>> greatestMBB(num_bidders, make_pair(0, 0));
-
-      cout << "\n";
-      for (int i = 0; i < num_bidders; ++i) {
-          for (int j = 0; j < num_goods; ++j) {
-              if (mbbAllocVec[i][j] > greatestMBB[i].first) {
-                  greatestMBB[i].first = mbbAllocVec[i][j];
-                  greatestMBB[i].second = j;
-              }
-          }
-          cout << "Für Bidder " << i << " greatest MBB " << "for good " << greatestMBB[i].second << " is: "
-               << greatestMBB[i].first << "\n";
-
-      }
-
-      */
-
     cout << "\n";
-    for (int i = 0; i < num_bidders; ++i) {
+    for (int i = 0; i < num_bidders; i++) {
         cout << "Für Bidder " << i << " greatest MBB " << "\n";
         for (int j = 0; j < num_goods; ++j) {
 
-            for (mytuple &p: mbbVec[i]) {
+            const mytuple &p = mbbVec[i][j];
 
                 cout << " for good " << p.second << " is: " << p.first << "\n";
-            }
-            //sehr wichtig!
-            break;
 
         }
 
     }
 
-
+    //debugging
+    cout << "\n";
+    for (int j = 0; j < num_goods; ++j) {
+        cout << "Für Gut " << j << " gibt es " << interGood[j] << " Interessenten " << "\n";
+    }
 
     //ACHTUNG:
 
@@ -218,7 +215,7 @@ int main() {
     //quanitity of item i intially = 1
     vector<double> quantItem(num_goods);
     for (int j = 0; j < num_goods; ++j) {
-        quantItem[j] = 4;
+        quantItem[j] = 1;
     }
 
     cout << "\n";
@@ -239,7 +236,9 @@ int main() {
             if (quantItem[j] != 0 && bidders[iter].budget != 0) {
 
                 //allocation; min <= ist überhaupt noch genug des Guts für den Bidder da?
-                mbbItemAllocVec[iter][j] = min(bidders[iter].budget / prices[p.second], quantItem[j]);
+                //TODO: bidders[iter].budget / prices[p.second] = 1/0.28 ; quantItem[j] = 1;
+                //TODO: wir dürfen nur soviel zuweisen, wie auch einem Bidder zusteht; => wieviele bidder wollen das gut? => teile quantItem durch diese Anzahl und weise diese Menge maximal zu
+                mbbItemAllocVec[iter][j] = min(bidders[iter].budget / prices[p.second], quantItem[j]/interGood[j]);
                 //spending
                 spendVec[iter][j] = mbbItemAllocVec[iter][j] * prices[p.second];
                 //item wurde vekauft und muss daher dezimiert werden
@@ -260,7 +259,7 @@ int main() {
     // Printing the vectors
 
     //debugging - printing Alloc vector
-
+    cout << "MBB alloc graph: \n";
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
             cout << mbbItemAllocVec[i][j] << " ";
@@ -271,7 +270,7 @@ int main() {
     cout << "\n";
 
     //debugging - printing spending vector
-
+    cout << "Spending graph: \n";
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
             cout << spendVec[i][j] << " ";
@@ -282,7 +281,7 @@ int main() {
 
     //debugging - all goods allocated?
     cout << "\n";
-
+    cout << "Restmenge jedes Guts: \n";
     for (int j = 0; j < num_goods; ++j) {
         cout << quantItem[j] << " ";
     }
@@ -290,7 +289,7 @@ int main() {
     //debugging - all budget spend?
 
     cout << "\n";
-
+    cout << "Restbudget jedes Bidders: \n";
     for (int i = 0; i < num_bidders; ++i) {
 
         cout << bidders[i].budget << " ";
