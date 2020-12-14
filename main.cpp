@@ -207,8 +207,13 @@ int main() {
 
 
 
+    //ACHTUNG:
 
-    //logik for mbb-graph alloc
+    //logik for mbb-graph alloc:
+
+      //every item is allocated fully
+      //every agent spends all his budget
+      //every agent spends budget only on MBB-items
 
 
     //quanitity of item i intially = 1
@@ -229,56 +234,29 @@ int main() {
         for (int j = 0; j < num_goods; ++j) {
 
             const mytuple &p = mbbVec[i][j];
-                if (quantItem[j] != 0 && bidders[i].budget != 0) {
-                    //TODO: ist überhaupt noch genug für Bidder da?
+            if (quantItem[j] != 0 && bidders[i].budget != 0) {
+                //TODO: ist überhaupt noch genug für Bidder da?
 
-                    //allocation
-                    mbbItemAllocVec[i][j] = min(bidders[i].budget / prices[p.second], quantItem[j]);
-                    //spending
-                    spendVec[i][j] =  mbbItemAllocVec[i][j] * prices[p.second];
-                    //item wurde vekauft und muss daher dezimiert werden
-                    quantItem[j] = quantItem[j] -  mbbItemAllocVec[i][j];
-                    //stimm das mit dem budget abzug so?
-                    // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
-                    bidders[i].budget = bidders[i].budget - spendVec[i][j];
-                    continue;
-                }
-
-/*
-                //TODO: gehe zu nächstem MBB-Item in mbbVec; aber wie?
-                    if (quantItem[j] != 0 && bidders[i].budget != 0) {
-                        for (const mytuple &p: mbbVec[i]) {
-                            //allocation
-                            mbbItemAllocVec[i][j] = bidders[i].budget / prices[p.second];
-                            //spending
-                            spendVec[i][j] = bidders[i].budget / prices[p.second];
-                            //item wurde vekauft und muss daher dezimiert werden
-                            quantItem[j] = quantItem[j] - (bidders[i].budget / prices[p.second]);
-                            //stimm das mit dem budget abzug so?
-                            // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
-                            bidders[i].budget = bidders[i].budget - (bidders[i].budget / prices[p.second]);
-                            continue;
-                        }
-                        //sehr wichtig!
-                        break;
-                    }
-
-                    if (bidders[i].budget == 0) continue;
-
-                    if (quantItem[j] == 0 && bidders[i].budget != 0) {
-
-
-
-
-
-                        mbbItemAllocVec[i][j] = 99;
-                    }
-*/
-
+                //allocation
+                mbbItemAllocVec[i][j] = min(bidders[i].budget / prices[p.second], quantItem[j]);
+                //spending
+                spendVec[i][j] = mbbItemAllocVec[i][j] * prices[p.second];
+                //item wurde vekauft und muss daher dezimiert werden
+                quantItem[j] = quantItem[j] - mbbItemAllocVec[i][j];
+                //stimm das mit dem budget abzug so?
+                // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
+                bidders[i].budget = bidders[i].budget - spendVec[i][j];
+                continue;
+            }
         }
     }
 
-    //debugging
+
+
+     // Printing the vectors
+
+    //debugging - printing Alloc vector
+
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
              cout <<  mbbItemAllocVec[i][j] << " ";
@@ -288,12 +266,21 @@ int main() {
 
     cout << "\n";
 
-    //debugging
+    //debugging - printing spending vector
+
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
             cout <<  spendVec[i][j] << " ";
         }
         cout << "\n";
+    }
+
+
+    //debugging - all goods allocated?
+    cout << "\n";
+
+    for (int j = 0; j < num_goods; ++j) {
+        cout << quantItem[j] << " ";
     }
 
 
