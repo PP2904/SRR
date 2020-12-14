@@ -122,7 +122,7 @@ int main() {
     //tuple: (number good, mbb)
     typedef pair<double, int> mytuple;
     double mbb = 0.0;
-    //vector Aufbau bspw: bidder 1: (0, mbb), (1,mbb), ...
+    //vector Aufbau bspw: bidder 1: (mbb, 0), (mbb,1), ...
     vector<vector<mytuple>> mbbVec(num_bidders,vector<mytuple>(num_goods));
 
     for (int i = 0; i < num_bidders; ++i) {
@@ -228,9 +228,24 @@ int main() {
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
 
+            const mytuple &p = mbbVec[i][j];
+                if (quantItem[j] != 0 && bidders[i].budget != 0) {
+                    //TODO: ist überhaupt noch genug für Bidder da?
+
+                    //allocation
+                    mbbItemAllocVec[i][j] = min(bidders[i].budget / prices[p.second], quantItem[j]);
+                    //spending
+                    spendVec[i][j] =  mbbItemAllocVec[i][j] * prices[p.second];
+                    //item wurde vekauft und muss daher dezimiert werden
+                    quantItem[j] = quantItem[j] -  mbbItemAllocVec[i][j];
+                    //stimm das mit dem budget abzug so?
+                    // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
+                    bidders[i].budget = bidders[i].budget - spendVec[i][j];
+                    continue;
+                }
+
+/*
                 //TODO: gehe zu nächstem MBB-Item in mbbVec; aber wie?
-
-
                     if (quantItem[j] != 0 && bidders[i].budget != 0) {
                         for (const mytuple &p: mbbVec[i]) {
                             //allocation
@@ -251,9 +266,14 @@ int main() {
                     if (bidders[i].budget == 0) continue;
 
                     if (quantItem[j] == 0 && bidders[i].budget != 0) {
-                        //TODO: gehe zu nächstem MBB-Item in mbbVec; aber wie?
+
+
+
+
+
                         mbbItemAllocVec[i][j] = 99;
                     }
+*/
 
         }
     }
@@ -265,6 +285,17 @@ int main() {
         }
         cout << "\n";
     }
+
+    cout << "\n";
+
+    //debugging
+    for (int i = 0; i < num_bidders; ++i) {
+        for (int j = 0; j < num_goods; ++j) {
+            cout <<  spendVec[i][j] << " ";
+        }
+        cout << "\n";
+    }
+
 
 
     return 0;
