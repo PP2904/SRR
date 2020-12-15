@@ -211,6 +211,11 @@ int main() {
     //every agent spends all his budget
     //every agent spends budget only on MBB-items
 
+    //maximum spend per item = 1
+    vector<double> spendPerItem (num_goods);
+
+
+
 
     //quanitity of item i intially = 1
     vector<double> quantItem(num_goods);
@@ -226,21 +231,99 @@ int main() {
     //spending vector  for spending graph Q(x)
     vector<vector<double>> spendVec(num_bidders, vector<double>(num_goods));
 
+    //TODO: ich muss über mbbVec gehen und pro bidder das größte Gut zuweisen unter den Beschränkungen, die ich bereits verwendet habe
+    // TODO: funktioniert ganz gut bisher, jedoch wieder die Schleife nur 1x ausgeführt; Ich benötige aber einen Durchlauf bis alle Items verkauft sind & jeder Bidder sein gesamtes Budget ausgegeben hat (!)
 
-    for (int j = 0; j < num_goods; ++j) {
+
+    while( (accumulate(quantItem.begin(),quantItem.end(),0)) != 0 ) {
+
+        for (int iter = 0; iter < num_bidders; iter++) {
+
+            for (const mytuple &p: mbbVec[iter]) {
+
+                //number des aktuellen Goods
+                int numGood = p.second;
+
+
+                //Beschränkungen
+                if (((spendPerItem[p.second] + min(bidders[iter].budget / prices[p.second], quantItem[p.second])) <=
+                     1) && quantItem[p.second] != 0 && bidders[iter].budget != 0) {
+
+                    //allocation; min <= ist überhaupt noch genug des Guts für den Bidder da?
+                    //TODO: bidders[iter].budget / prices[p.second] = 1/0.28 ; quantItem[j] = 1;
+                    //TODO: wir dürfen nur soviel zuweisen, wie auch einem Bidder zusteht; => wieviele bidder wollen das gut? => teile quantItem durch diese Anzahl und weise diese Menge maximal zu
+                    mbbItemAllocVec[iter][p.second] = min(bidders[iter].budget / prices[p.second],
+                                                          quantItem[p.second]); // /interGood[j]);
+                    //spending
+                    spendVec[iter][p.second] = mbbItemAllocVec[iter][p.second] * prices[p.second];
+                    //spending per Item maximum of 1
+                    spendPerItem[p.second] =
+                            spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
+                    //item wurde vekauft und muss daher dezimiert werden
+                    quantItem[p.second] = quantItem[p.second] - mbbItemAllocVec[iter][p.second];
+                    //stimm das mit dem budget abzug so?
+                    // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
+                    bidders[iter].budget = bidders[iter].budget - spendVec[iter][p.second];
+
+                    break;
+
+                }
+
+                if (((spendPerItem[p.second] + min(bidders[iter].budget / prices[p.second], quantItem[p.second])) >=
+                     1)) {
+
+                    //TODO springe zu nächste MBB des Bidders "iter"; also quasi nächste Tuple
+
+                    const mytuple &p = mbbVec[iter][numGood];
+
+                    //allocation; min <= ist überhaupt noch genug des Guts für den Bidder da?
+                    //TODO: bidders[iter].budget / prices[p.second] = 1/0.28 ; quantItem[j] = 1;
+                    //TODO: wir dürfen nur soviel zuweisen, wie auch einem Bidder zusteht; => wieviele bidder wollen das gut? => teile quantItem durch diese Anzahl und weise diese Menge maximal zu
+                    mbbItemAllocVec[iter][p.second] = min(bidders[iter].budget / prices[p.second],
+                                                          quantItem[p.second]); // /interGood[j]);
+                    //spending
+                    spendVec[iter][p.second] = mbbItemAllocVec[iter][p.second] * prices[p.second];
+                    //spending per Item maximum of 1
+                    spendPerItem[p.second] =
+                            spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
+                    //item wurde vekauft und muss daher dezimiert werden
+                    quantItem[p.second] = quantItem[p.second] - mbbItemAllocVec[iter][p.second];
+                    //stimm das mit dem budget abzug so?
+                    // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
+                    bidders[iter].budget = bidders[iter].budget - spendVec[iter][p.second];
+
+                    break;
+
+                }
+
+
+            }
+
+
+        }
+
+    }
+
+
+
+/*    for (int j = 0; j < num_goods; ++j) {
 
         for (int iter = 0; iter < num_bidders; iter++) {
 
             const mytuple &p = mbbVec[iter][j];
 
-            if (quantItem[j] != 0 && bidders[iter].budget != 0) {
+            if (quantItem[j] != 0 && bidders[iter].budget != 0 && (spendPerItem[j] < 1)) {
+
+                if((spendPerItem[j] + min(bidders[iter].budget / prices[p.second], quantItem[j]/interGood[j])) < 1 ){
 
                 //allocation; min <= ist überhaupt noch genug des Guts für den Bidder da?
                 //TODO: bidders[iter].budget / prices[p.second] = 1/0.28 ; quantItem[j] = 1;
                 //TODO: wir dürfen nur soviel zuweisen, wie auch einem Bidder zusteht; => wieviele bidder wollen das gut? => teile quantItem durch diese Anzahl und weise diese Menge maximal zu
-                mbbItemAllocVec[iter][j] = min(bidders[iter].budget / prices[p.second], quantItem[j]/interGood[j]);
+                mbbItemAllocVec[iter][j] = min(bidders[iter].budget / prices[p.second], quantItem[j]); // /interGood[j]);
                 //spending
                 spendVec[iter][j] = mbbItemAllocVec[iter][j] * prices[p.second];
+                //spending per Item maximum of 1
+                spendPerItem[j] = spendPerItem[j] + (mbbItemAllocVec[iter][j] * prices[p.second]);
                 //item wurde vekauft und muss daher dezimiert werden
                 quantItem[j] = quantItem[j] - mbbItemAllocVec[iter][j];
                 //stimm das mit dem budget abzug so?
@@ -248,12 +331,10 @@ int main() {
                 bidders[iter].budget = bidders[iter].budget - spendVec[iter][j];
                 //continue;
 
+                }
             }
         }
-    }
-
-
-
+    }*/
 
 
     // Printing the vectors
@@ -285,6 +366,14 @@ int main() {
     for (int j = 0; j < num_goods; ++j) {
         cout << quantItem[j] << " ";
     }
+
+    //debugging - max 1 dollar spend per good?
+    cout << "\n";
+    cout << "Ausgegeben pro Gut: \n";
+    for (int j = 0; j < num_goods; ++j) {
+        cout << spendPerItem[j] << " ";
+    }
+
 
     //debugging - all budget spend?
 
