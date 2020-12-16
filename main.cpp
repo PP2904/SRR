@@ -84,7 +84,7 @@ int main() {
         //valuation pro Gut und Bidder
         //for (auto &v: bidders[k].valuation){
         for (i = 0; i < num_goods; i++) {
-            bidders[k].valuation[i] = (random_number(0, 8));
+            bidders[k].valuation[i] = (random_number(0, 3));
         }
         bidders[k].budget = 1;
     }
@@ -284,8 +284,7 @@ int main() {
                     //spending
                     spendVec[iter][p.second] = mbbItemAllocVec[iter][p.second] * prices[p.second];
                     //spending per Item maximum of 1
-                    spendPerItem[p.second] =
-                            spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
+                    spendPerItem[p.second] = spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
                     //item wurde vekauft und muss daher dezimiert werden
                     quantItem[p.second] = quantItem[p.second] - mbbItemAllocVec[iter][p.second];
                     //stimm das mit dem budget abzug so?
@@ -302,6 +301,11 @@ int main() {
 
         }
 
+    }
+
+
+    for (int iter = 0; iter < num_bidders; iter++) {
+        if(bidders[iter].budget <= 0.1) bidders[iter].budget = 0;
     }
 
 
