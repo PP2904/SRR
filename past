@@ -1,3 +1,7 @@
+//
+// Created by Peter Pfrommer on 19.12.20.
+//
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -9,6 +13,7 @@
 #include <utility>
 #include <map>
 #include <algorithm>
+
 
 
 using namespace std;
@@ -36,13 +41,88 @@ int random_number(int lb, int ub) {
 }
 
 
-int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,vector<Bidder> bidders, int num_goods, double valMultiplier, int num_bidders, int num_iterations, int num_iter_exp){
+int main() {
+
+    //generate #goods
+    int num_goods;
+    cout << "Number Goods: ";
+    cin >> num_goods;
+
+
+    //multiplier for valuation
+    double i = 1.;
+
+    //generate bidders with val, budget and spent_vec randomly
+    int num_bidders;
+    cout << "Number Bidders: ";
+    cin >> num_bidders;
+
+
+    //laut paper muss number bidders < num goods sein
+    if (num_bidders > num_goods) {
+        printf("Error number bidders larger than number goods");
+        exit(EXIT_FAILURE);
+    }
+
+    //spending restriction
+    double spendingRestriction;
+    cout << "What is the spending restriction?: ";
+    cin >> spendingRestriction;
+
+    //budget
+    double budgetAgent;
+    cout << "Budget of an agent: ";
+    cin >> budgetAgent;
+
+
+    vector<Bidder> bidders(num_bidders);
+
+    for (int k = 0; k < num_bidders; ++k) {
+        bidders[k].valuation.resize(num_goods);
+        //valuation pro Gut und Bidder
+        //for (auto &v: bidders[k].valuation){
+        for (i = 0; i < num_goods; i++) {
+            bidders[k].valuation[i] = (random_number(0, 3));
+        }
+        bidders[k].budget = 1;
+    }
+
+
+
+    //Idee 1: prices müssen zwischen 0 und 1 liegen, außer bei einem Gut
+
+    //prices goods randomly initiated
+    vector<double> prices(num_goods);
+
+    for (int k = 0; k < num_goods; ++k) {
+
+        /*//Test, ein Gut ist deutlich teurer als die andern
+        if (k == (num_goods - 1)) {
+            prices[k] = 1;
+            continue;
+        }*/
+
+        prices[k] = double((random_number(6, 10))) / (random_number(10, 40));
+        //prices darf nicht 0 sein !!!
+        if (prices[k] == 0) {
+            prices[k] = double((random_number(6, 10))) / (random_number(10, 50));
+        }
+
+    }
+
+    //ich möchte einen bipartiten graphen erstellen (S. 6) und davon einen MBB graph und einen spending graph Q(x) ableiten
+    // Dann möchte ich ein SR-equilibrium berechnen
+    //danach möchte ich den SRR algo ausführen
+
+    //berechnen MBB pro Bidder
+
+
 
     //number of interested bidder in same good j (=interGood vector)
-    vector<int> interGood(num_goods);
+    vector <int> interGood(num_goods);
 
     //initialize interGood vector
-    for (int j = 0; j < num_goods; ++j) {
+    for(int j = 0; j < num_goods; ++j){
         interGood[j] = 0;
     }
 
@@ -67,7 +147,7 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
             mbb = bidders[i].valuation[j] / prices[j];
 
             //interGood := Summe der Interessenten pro Gut
-            if (mbb != 0.0) {
+            if(mbb != 0.0){
                 interGood[j] += 1;
             }
 
@@ -132,7 +212,10 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
     //every agent spends budget only on MBB-items
 
     //maximum spend per item = 1
-    vector<double> spendPerItem(num_goods);
+    vector<double> spendPerItem (num_goods);
+
+
+
 
     //quanitity of item i intially = 1
     vector<double> quantItem(num_goods);
@@ -152,7 +235,7 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
     // TODO: Ich benötige einen Durchlauf bis alle Items verkauft sind & jeder Bidder sein gesamtes Budget ausgegeben hat (!)
 
 
-    while ((accumulate(quantItem.begin(), quantItem.end(), 0)) != 0) {
+    while( (accumulate(quantItem.begin(),quantItem.end(),0)) != 0 ) {
 
         for (int iter = 0; iter < num_bidders; iter++) {
 
@@ -198,8 +281,7 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
                     //spending
                     spendVec[iter][p.second] = mbbItemAllocVec[iter][p.second] * prices[p.second];
                     //spending per Item maximum of 1
-                    spendPerItem[p.second] =
-                            spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
+                    spendPerItem[p.second] = spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
                     //item wurde vekauft und muss daher dezimiert werden
                     quantItem[p.second] = quantItem[p.second] - mbbItemAllocVec[iter][p.second];
                     //stimm das mit dem budget abzug so?
@@ -213,14 +295,48 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
 
             }
 
+
         }
 
     }
 
 
     for (int iter = 0; iter < num_bidders; iter++) {
-        if (bidders[iter].budget <= 0.1) bidders[iter].budget = 0;
+        if(bidders[iter].budget <= 0.1) bidders[iter].budget = 0;
     }
+
+
+
+/*    for (int j = 0; j < num_goods; ++j) {
+
+        for (int iter = 0; iter < num_bidders; iter++) {
+
+            const mytuple &p = mbbVec[iter][j];
+
+            if (quantItem[j] != 0 && bidders[iter].budget != 0 && (spendPerItem[j] < 1)) {
+
+                if((spendPerItem[j] + min(bidders[iter].budget / prices[p.second], quantItem[j]/interGood[j])) < 1 ){
+
+                //allocation; min <= ist überhaupt noch genug des Guts für den Bidder da?
+                //TODO: bidders[iter].budget / prices[p.second] = 1/0.28 ; quantItem[j] = 1;
+                //TODO: wir dürfen nur soviel zuweisen, wie auch einem Bidder zusteht; => wieviele bidder wollen das gut? => teile quantItem durch diese Anzahl und weise diese Menge maximal zu
+                mbbItemAllocVec[iter][j] = min(bidders[iter].budget / prices[p.second], quantItem[j]); // /interGood[j]);
+                //spending
+                spendVec[iter][j] = mbbItemAllocVec[iter][j] * prices[p.second];
+                //spending per Item maximum of 1
+                spendPerItem[j] = spendPerItem[j] + (mbbItemAllocVec[iter][j] * prices[p.second]);
+                //item wurde vekauft und muss daher dezimiert werden
+                quantItem[j] = quantItem[j] - mbbItemAllocVec[iter][j];
+                //stimm das mit dem budget abzug so?
+                // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
+                bidders[iter].budget = bidders[iter].budget - spendVec[iter][j];
+                //continue;
+
+                }
+            }
+        }
+    }*/
+
 
     // Printing the vectors
 
@@ -276,241 +392,13 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
     cout << "Utility: \n";
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            util += mbbItemAllocVec[i][j] * bidders[i].valuation[j];
+            util += mbbItemAllocVec[i][j]*bidders[i].valuation[j];
         }
         cout << util << "\n";
     }
 
 
-    return 0;
 
-}
-
-
-int ComputeFracEquilibrium(double spendingRestriction, vector<Bidder> bidders, int num_goods, double valMultiplier, int num_bidders, int num_iterations, double quantItem,
-                            int num_iter_exp) {
-    //FOR SCHLEIFE FÜR ANZAHL WIEDERHOLUNGEN DES GESAMTEXPERIMENTS
-    for (int iter = 0; iter < num_iter_exp; iter++) {
-
-
-        //int num_iterations = 2000;
-        vector<double> prices(num_goods);
-        for (int it = 0; it < num_iterations; ++it) {
-
-            //in jeder iteration werden die preise des guts i auf die menge der preise,
-            // die jeder bidder ausgegeben hat, gesetzt
-            for (int j = 0; j < num_goods; ++j) {
-                prices[j] = 0;
-                for (int i = 0; i < bidders.size(); ++i)
-                    prices[j] += bidders[i].spent[j];
-
-            }
-            //update der valuations und spents pro bidder
-            vector<vector<double>> update(bidders.size(), vector<double>(num_goods)); //
-            for (int i = 0; i < bidders.size(); ++i) {
-                for (int j = 0; j < num_goods; ++j) {
-                    update[i][j] = bidders[i].valuation[j] * bidders[i].spent[j] / prices[j];
-
-                }
-            }
-
-            //new bid vector for next iteration
-            for (int i = 0; i < bidders.size(); ++i) {
-                for (int j = 0; j < num_goods; ++j) {
-                    bidders[i].spent[j] =
-                            bidders[i].budget * update[i][j] / accumulate(update[i].begin(), update[i].end(), 0.0);
-
-                }
-            }
-
-            //print für jeden bidder und jede iteration dessen allocation von Gut 0 bis n
-            cout << "Iteration " << it << ":\n";
-            for (int i = 0; i < bidders.size(); ++i) {
-                cout << "Bidder " << i << ": " << bidders[i] << endl;
-            }
-            cout << endl;
-
-        }
-
-        //von Max utility und utility (im equilibrium sind diese gleich)
-
-        vector<double> utility(num_bidders);
-        vector<double> max_utility(num_bidders);
-        for (int b = 0; b < num_bidders; ++b) {
-            max_utility[b] = 0;
-            for (int i = 0; i < num_goods; ++i) {
-                if (prices[i] == 0) {
-                    printf("prices is 0");
-                    exit(EXIT_FAILURE);
-                }
-                utility[b] += bidders[b].valuation[i] * bidders[b].spent[i] / prices[i]; //Aufpassen wenn prices[i] = 0!
-                if (max_utility[b] < bidders[b].valuation[i] / prices[i]) {
-                    max_utility[b] = bidders[b].valuation[i] / prices[i];
-                }
-            }
-
-            max_utility[b] *= bidders[b].budget;
-        }
-
-        // save utility from start
-        vector<double> val_start(num_bidders);
-        for (int b = 0; b < num_bidders; ++b) {
-            for (int i = 0; i < num_goods; ++i) {
-                val_start[b] = bidders[b].valuation[i];
-            }
-        }
-
-
-
-        //Optimales Ergebnis//
-
-        cout << endl;
-        cout << "Fraktionales/optimales Ergebnis: ";
-        cout << endl;
-
-
-        //set precision
-        int pre = 3;
-
-
-        for (int i = 0; i < num_bidders; ++i) {
-            cout << "Max Utility: " << std::setprecision(pre) << max_utility[i] << endl;
-        }
-
-        cout << endl;
-        cout << "Bidders budget: ";
-        cout << endl;
-
-        for (int i = 0; i < num_bidders; ++i) {
-            double rest = bidders[i].budget-accumulate(bidders[i].spent.begin(),bidders[i].spent.end(),0.0);
-            cout << "restliches Budget bidder " << i  << ": " << std::setprecision(pre) << rest << endl;
-        }
-
-        cout << endl;
-
-       /* *//*** Write allocations to graph ***//*
-        vector<vector<double>> graph(num_bidders, vector<double>(num_goods));
-        for (int i = 0; i < num_bidders; ++i) {
-            for (int j = 0; j < num_goods; ++j) {
-                graph[i][j] = bidders[i].spent[j] / prices[j]; //bidders.spent = nan?
-                if (isnan(graph[i][j])) {
-                    graph[i][j] = 0.0000001;
-                }
-
-
-                //checken auf nan
-                if (isnan(graph[i][j])) {
-                    printf("graph value is nan");
-                    exit(EXIT_FAILURE);
-                }
-
-
-            }
-        }*/
-
-        SpendingRestrictedRound(prices,spendingRestriction,bidders,num_goods, valMultiplier, num_bidders,num_iterations,num_iter_exp);
-
-
-    }
 
     return 0;
-}
-
-
-int main() {
-
-    /********************
-     *
-     */
-
-    //generate goods
-    int num_goods;
-    cout << "Number Goods: ";
-    cin >> num_goods;
-
-    //multiplier for valuation
-    double valMultiplier = 1.;
-
-    //generate bidders with val, budget and spent_vec randomly
-    int num_bidders;
-    cout << "Number Bidders: ";
-    cin >> num_bidders;
-
-    //laut paper muss number bidders < num goods sein
-    if (num_bidders > num_goods) {
-        printf("Error number bidders larger than number goods");
-        exit(EXIT_FAILURE);
-    }
-
-    //spending restriction
-    double spendingRestriction;
-    cout << "What is the spending restriction?: ";
-    cin >> spendingRestriction;
-
-
-    //num_iterations = Anzahl der Iterationen des Handels auf dem FM
-    int num_iterations;
-    cout << "Number Iterations: ";
-    cin >> num_iterations;
-
-    //Quantität pro Gut
-    double quantItem;
-    cout << "Quantität eines Guts: ";
-    cin >> quantItem;
-
-    //num_iter_exp = Anzahl Ausführungen des Gesamtexperiments
-    int num_iter_exp;
-    cout << "Number Iterations Experiment: ";
-    cin >> num_iter_exp;
-
-    vector<Bidder> bidders(num_bidders);
-
-    for (int k = 0; k < num_bidders; ++k) {
-        bidders[k].valuation.resize(num_goods);
-        //valuation pro Gut und Bidder
-        for (auto &v: bidders[k].valuation) v = (random_number(1, 11) + random_number(1, 15)) * valMultiplier;
-        bidders[k].budget = random_number(1, 11) + random_number(1, 31);
-        bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
-    }
-
-
-    /********************
-     *
-     */
-
-    auto start = std::chrono::system_clock::now();
-
-
-    //ofstream myfile;
-    ofstream myfile2;
-
-
-    myfile2.open("results.txt", std::ios_base::app);
-    myfile2 << "Number Goods: " << num_goods << ", " << " Number Bidders: " << num_bidders << ", "
-            << " Number Iterations: " << num_iterations << ", " << " Quantitaet pro Gut: " << quantItem << "\n";
-    myfile2 << "max_utility for rounded alloc | max_utility" << "\n";
-
-    /********************
-    *                  *
-    ********************/
-
-    ComputeFracEquilibrium(spendingRestriction,bidders, num_goods, valMultiplier, num_bidders, num_iterations, quantItem, num_iter_exp);
-
-    /********************
-    *                  *
-    ********************/
-
-
-
-    auto end = std::chrono::system_clock::now();
-
-    std::chrono::duration<double> elapsed_seconds = end - start;
-    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-
-    cout << "\n";
-    std::cout << "finished computation at " << std::ctime(&end_time)
-              << "elapsed time: " << elapsed_seconds.count() << "s\n";
-
-    return 0;
-
 }
