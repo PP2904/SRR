@@ -3,11 +3,9 @@
 #include <fstream>
 #include <chrono>
 #include <random>
-#include <list>
 #include <iomanip>
 #include <stdlib.h>
 #include <utility>
-#include <map>
 #include <algorithm>
 
 
@@ -36,7 +34,7 @@ int random_number(int lb, int ub) {
 }
 
 
-int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,vector<Bidder> bidders, int num_goods, double valMultiplier, int num_bidders, int num_iterations, int num_iter_exp){
+int SpendingRestrictedRound(vector<double> prices, vector<double> quantItemVec, double spendingRestriction,vector<Bidder> bidders, int num_goods, double valMultiplier, int num_bidders, int num_iterations, int num_iter_exp){
 
     //number of interested bidder in same good j (=interGood vector)
     vector<int> interGood(num_goods);
@@ -122,25 +120,15 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
     for (int j = 0; j < num_goods; ++j) {
         cout << "Für Gut " << j << " gibt es " << interGood[j] << " Interessenten " << "\n";
     }
+    cout << "\n";
 
-    //ACHTUNG:
 
-    //logik for mbb-graph alloc:
-
-    //every item is allocated fully
-    //every agent spends all his budget
-    //every agent spends budget only on MBB-items
-
-    //maximum spend per item = 1
+    //maximum spend per item
     vector<double> spendPerItem(num_goods);
-
-    //quanitity of item i intially = 1
-    vector<double> quantItem(num_goods);
     for (int j = 0; j < num_goods; ++j) {
-        quantItem[j] = 1;
+        spendPerItem[j] = 0;
     }
 
-    cout << "\n";
 
     //alloc mbb items
     vector<vector<double>> mbbItemAllocVec(num_bidders, vector<double>(num_goods));
@@ -152,7 +140,13 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
     // TODO: Ich benötige einen Durchlauf bis alle Items verkauft sind & jeder Bidder sein gesamtes Budget ausgegeben hat (!)
 
 
-    while ((accumulate(quantItem.begin(), quantItem.end(), 0)) != 0) {
+
+
+
+    //FIXME: Hier ist noch ein Fehler; die restriction wird overall nicht eingehalten (!)
+
+
+
 
         for (int iter = 0; iter < num_bidders; iter++) {
 
@@ -163,20 +157,21 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
 
 
                 //Beschränkungen
-                if (((spendPerItem[p.second] + min(bidders[iter].budget / prices[p.second], quantItem[p.second])) <=
-                     spendingRestriction) && quantItem[p.second] != 0 && bidders[iter].budget != 0) {
+                if (((spendPerItem[p.second] + ((min(bidders[iter].budget / prices[p.second], quantItemVec[p.second])))*prices[p.second]) <= spendingRestriction) && quantItemVec[p.second] != 0 && bidders[iter].budget != 0) {
 
                     //allocation; min <= ist überhaupt noch genug des Guts für den Bidder da?
 
-                    mbbItemAllocVec[iter][p.second] = min(bidders[iter].budget / prices[p.second],
-                                                          quantItem[p.second]); // /interGood[j]);
+                    mbbItemAllocVec[iter][p.second] = min(bidders[iter].budget / prices[p.second], quantItemVec[p.second]); // /interGood[j]);
+
                     //spending
                     spendVec[iter][p.second] = mbbItemAllocVec[iter][p.second] * prices[p.second];
+
                     //spending per Item maximum of 1
-                    spendPerItem[p.second] =
-                            spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
+                    spendPerItem[p.second] = spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
+
                     //item wurde vekauft und muss daher dezimiert werden
-                    quantItem[p.second] = quantItem[p.second] - mbbItemAllocVec[iter][p.second];
+                    quantItemVec[p.second] = quantItemVec[p.second] - mbbItemAllocVec[iter][p.second];
+
                     //stimm das mit dem budget abzug so?
                     // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
                     bidders[iter].budget = bidders[iter].budget - spendVec[iter][p.second];
@@ -185,7 +180,7 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
 
                 }
 
-                if (((spendPerItem[p.second] + min(bidders[iter].budget / prices[p.second], quantItem[p.second])) >=
+                if (((spendPerItem[p.second] + ((min(bidders[iter].budget / prices[p.second], quantItemVec[p.second])))*prices[p.second]) >=
                      spendingRestriction)) {
 
 
@@ -193,15 +188,13 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
 
                     //allocation; min <= ist überhaupt noch genug des Guts für den Bidder da?
 
-                    mbbItemAllocVec[iter][p.second] = min(bidders[iter].budget / prices[p.second],
-                                                          quantItem[p.second]); // /interGood[j]);
+                    mbbItemAllocVec[iter][p.second] = min(bidders[iter].budget / prices[p.second], quantItemVec[p.second]); // /interGood[j]);
                     //spending
                     spendVec[iter][p.second] = mbbItemAllocVec[iter][p.second] * prices[p.second];
                     //spending per Item maximum of 1
-                    spendPerItem[p.second] =
-                            spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
+                    spendPerItem[p.second] = spendPerItem[p.second] + (mbbItemAllocVec[iter][p.second] * prices[p.second]);
                     //item wurde vekauft und muss daher dezimiert werden
-                    quantItem[p.second] = quantItem[p.second] - mbbItemAllocVec[iter][p.second];
+                    quantItemVec[p.second] = quantItemVec[p.second] - mbbItemAllocVec[iter][p.second];
                     //stimm das mit dem budget abzug so?
                     // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
                     bidders[iter].budget = bidders[iter].budget - spendVec[iter][p.second];
@@ -213,9 +206,20 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
 
             }
 
+            //debugging - printing spending vector
+            cout << "Spending graph: \n";
+            for (int i = 0; i < num_bidders; ++i) {
+                for (int j = 0; j < num_goods; ++j) {
+                    cout << spendVec[i][j] << " ";
+                }
+                cout << "\n";
+            }
+
         }
 
-    }
+
+
+
 
 
     for (int iter = 0; iter < num_bidders; iter++) {
@@ -223,7 +227,7 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
     }
 
     // Printing the vectors
-
+    cout << "\n";
     //debugging - printing Alloc vector
     cout << "MBB alloc graph: \n";
     for (int i = 0; i < num_bidders; ++i) {
@@ -249,7 +253,7 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
     cout << "\n";
     cout << "Restmenge jedes Guts: \n";
     for (int j = 0; j < num_goods; ++j) {
-        cout << quantItem[j] << " ";
+        cout << quantItemVec[j] << " ";
     }
 
     //debugging - max 1 dollar spend per good?
@@ -287,14 +291,17 @@ int SpendingRestrictedRound(vector<double> prices, double spendingRestriction,ve
 }
 
 
-int ComputeFracEquilibrium(double spendingRestriction, vector<Bidder> bidders, int num_goods, double valMultiplier, int num_bidders, int num_iterations, double quantItem,
+vector<double> ComputeFracEquilibrium(double spendingRestriction, vector<Bidder> bidders, int num_goods, double valMultiplier, int num_bidders, int num_iterations, double quantItem,
                             int num_iter_exp) {
+
+    //prices vector
+    vector<double> prices(num_goods);
+
     //FOR SCHLEIFE FÜR ANZAHL WIEDERHOLUNGEN DES GESAMTEXPERIMENTS
     for (int iter = 0; iter < num_iter_exp; iter++) {
 
 
-        //int num_iterations = 2000;
-        vector<double> prices(num_goods);
+
         for (int it = 0; it < num_iterations; ++it) {
 
             //in jeder iteration werden die preise des guts i auf die menge der preise,
@@ -362,16 +369,16 @@ int ComputeFracEquilibrium(double spendingRestriction, vector<Bidder> bidders, i
 
 
 
-        //Optimales Ergebnis//
-
-        cout << endl;
-        cout << "Fraktionales/optimales Ergebnis: ";
-        cout << endl;
 
 
         //set precision
         int pre = 3;
 
+        //Optimales Ergebnis//
+
+        cout << endl;
+        cout << "Fraktionales/optimales Ergebnis: ";
+        cout << endl;
 
         for (int i = 0; i < num_bidders; ++i) {
             cout << "Max Utility: " << std::setprecision(pre) << max_utility[i] << endl;
@@ -387,6 +394,26 @@ int ComputeFracEquilibrium(double spendingRestriction, vector<Bidder> bidders, i
         }
 
         cout << endl;
+
+        //debugging:
+        cout << endl;
+        cout << "Allocation: ";
+        cout << endl;
+
+        vector<vector<double>> graph(num_bidders, vector<double>(num_goods));
+        for (int i = 0; i < num_bidders; ++i) {
+            for (int j = 0; j < num_goods; ++j) {
+                graph[i][j] = bidders[i].spent[j] / prices[j]; //bidders.spent = nan
+                if (isnan(graph[i][j])) {
+                    graph[i][j] = 0.0000001;
+                }
+                cout << graph[i][j] << " ";
+            }
+
+            cout << "\n";
+
+        }
+
 
        /* *//*** Write allocations to graph ***//*
         vector<vector<double>> graph(num_bidders, vector<double>(num_goods));
@@ -408,12 +435,10 @@ int ComputeFracEquilibrium(double spendingRestriction, vector<Bidder> bidders, i
             }
         }*/
 
-        SpendingRestrictedRound(prices,spendingRestriction,bidders,num_goods, valMultiplier, num_bidders,num_iterations,num_iter_exp);
-
 
     }
 
-    return 0;
+    return prices;
 }
 
 
@@ -458,6 +483,12 @@ int main() {
     cout << "Quantität eines Guts: ";
     cin >> quantItem;
 
+    //quanitity of item i intially
+    vector<double> quantItemVec(num_goods);
+    for (int j = 0; j < num_goods; ++j) {
+        quantItemVec[j] = quantItem;
+    }
+
     //num_iter_exp = Anzahl Ausführungen des Gesamtexperiments
     int num_iter_exp;
     cout << "Number Iterations Experiment: ";
@@ -474,9 +505,13 @@ int main() {
     }
 
 
+    //prices vector
+    vector<double> prices(num_goods);
+
     /********************
      *
      */
+
 
     auto start = std::chrono::system_clock::now();
 
@@ -494,7 +529,9 @@ int main() {
     *                  *
     ********************/
 
-    ComputeFracEquilibrium(spendingRestriction,bidders, num_goods, valMultiplier, num_bidders, num_iterations, quantItem, num_iter_exp);
+    prices = ComputeFracEquilibrium(spendingRestriction,bidders, num_goods, valMultiplier, num_bidders, num_iterations, quantItem, num_iter_exp);
+
+    SpendingRestrictedRound(prices, quantItemVec, spendingRestriction, bidders, num_goods, valMultiplier, num_bidders, num_iterations, num_iter_exp);
 
     /********************
     *                  *
