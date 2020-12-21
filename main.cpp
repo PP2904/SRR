@@ -60,11 +60,13 @@ vector<vector<myTuple>> mbbGraph(int num_bidders, int num_goods, vector<Bidder> 
 
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
+            if((bidders[i].valuation[j] / newPrices[j]) > 0) {
 
-            mbb = bidders[i].valuation[j] / newPrices[j];
-            if(mbb < 0.001) mbb = 0;
+                mbb = bidders[i].valuation[j] / newPrices[j];
+                if (mbb < 0.001) mbb = 0;
 
-            mbbVec[i][j] = make_pair(mbb, j);
+                mbbVec[i][j] = make_pair(mbb, j);
+            }
 
         }
 
@@ -151,7 +153,7 @@ vector<int> interestsGood(int num_bidders, int num_goods, vector<vector<myTuple>
     vector<int> interGood(num_goods);
 
 
-    //funktioniert das?
+
     for (int i = 0; i < num_bidders; ++i) {
         for (const myTuple &p: SortedMbbVec[i]) {
 
@@ -169,28 +171,60 @@ vector<int> interestsGood(int num_bidders, int num_goods, vector<vector<myTuple>
 
 vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> bidders, vector<double> initPrices,
                             double spendingRestriction, vector<double> &quantItem, vector<vector<myTuple>> &SortedMbbVec,
-                            vector<int> &interGood, vector<vector<double>> &spendVec) {
+                            vector<int> &interGood, vector<vector<double>> &spendVec, vector<vector<double>> &update) {
+
+    ofstream myfile;
+    myfile.open("data.txt", std::ios_base::app);
+
     //TODO: passen Preise schrittweise an
 
     vector<double> newPrices(num_goods);
 
+
     newPrices = initPrices;
 
-    for (int k = 0; k < num_goods; ++k) {
+    //for (int k = 0; k < num_goods; ++k) {
         //wichtig, dass hier nur über goods gegangen wird, da sonst preise überschrieben werden
         //TODO: was ist wenn interGood = 0 ??
-        // TODO: interGood richtig berechnet?
 
-        newPrices[k] += newPrices[k] / interGood[k];
+      /*  // TODO: interGood richtig berechnet?
 
-        /*if(interGood[k] > interGood[k]/2){
-            newPrices[k] += newPrices[k] / interGood[k];
+        //newPrices[k] += newPrices[k] / interGood[k];
+
+        if(interGood[k] >= num_bidders/2){
+            newPrices[k] += 2 * newPrices[k] / interGood[k];
         }
 
-        if(interGood[k] <= interGood[k]/2) {
+        if(interGood[k] < num_bidders/2) {
             newPrices[k] -= newPrices[k] / interGood[k];
-        }*/
+        }
 
+    }
+*/
+
+
+      //PR-D preisanpassung; warum sinken die mbbs dennoch auf 0 mit iterations -> unendlich (in dem Fall schon 25 =) ??
+      // Vermutung: die Preise werden immer geringer und dadurch das Verhältnis von valuation/preis ... )
+
+    for (int k = 0; k < num_goods; ++k) {
+        for (int i = 0; i < bidders.size(); ++i)
+            newPrices[k] += bidders[i].spent[k];
+    }
+
+
+        for (int i = 0; i < bidders.size(); ++i) {
+            for (int j = 0; j < num_goods; ++j) {
+                update[i][j] = bidders[i].valuation[j] * bidders[i].spent[j] / newPrices[j];
+
+            }
+        }
+
+    for (int i = 0; i < bidders.size(); ++i) {
+        for (int j = 0; j < num_goods; ++j) {
+            bidders[i].spent[j] =
+                    bidders[i].budget * update[i][j] / accumulate(update[i].begin(), update[i].end(), 0.0);
+
+        }
     }
 
 
@@ -211,9 +245,13 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> bidde
         cout << "Bidder " << i << ": " << "\n";
         //const iterator (läuft nur über das aktuelle mbbVec[i] = aktuelle Reihe i)
         for (const myTuple &p: SortedMbbVec[i]) {
+            if (i==0) {
+                myfile << "(" << p.second << "," << setprecision(3) << p.first << ")" << " ";
+            }
             cout << "(" << p.second << "," << setprecision(3) << p.first << ")" << " ";
         }
         cout << "\n";
+        myfile << "\n";
     }
 
     //for debugging
@@ -234,11 +272,6 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> bidde
         }
         cout << "\n";
     }
-
-
-
-
-
 
     return newPrices;
 
@@ -295,8 +328,9 @@ int main() {
         bidders[k].valuation.resize(num_goods);
         //valuation pro Gut und Bidder
         for (int i = 0; i < num_goods; i++) {
-            bidders[k].valuation[i] = (random_number(0, 3));
+            bidders[k].valuation[i] = (random_number(0, 6));
         }
+        bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
         bidders[k].budget = budgetAgent;
     }
 
@@ -306,9 +340,11 @@ int main() {
 
     for (int k = 0; k < num_goods; ++k) {
         //wichtig, dass hier ein spezifischer Bidder gewählt wird, da sonst Probleme bei num_goods > num_bidders und bidders[k].budget
-        initPrices[k] = 10*bidders[0].budget / num_goods;
+        initPrices[k] = bidders[0].budget / num_goods;
     }
 
+    //price update vector
+    vector<vector<double>> update(bidders.size(), vector<double>(num_goods));
 
 
     /*
@@ -326,11 +362,11 @@ int main() {
     //while( (accumulate(quantItem.begin(),quantItem.end(),0.0)) != 0.0 ) {
 
     //für debugging
-    for (int dur = 0; dur < 100; dur++) {
+    for (int dur = 0; dur < 25; dur++) {
 
         //current price computation
         vector<double> newPrices = currentPrice(num_bidders, num_goods, bidders, initPrices, spendingRestriction,
-                                                quantItem, SortedMbbVec, interGood, spendVec);
+                                                quantItem, SortedMbbVec, interGood, spendVec, update);
 
         //preisanpassung übernehmen für nächsten loop
         initPrices = newPrices;
