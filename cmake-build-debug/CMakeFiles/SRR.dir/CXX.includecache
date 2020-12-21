@@ -17,11 +17,15 @@ chrono
 -
 random
 -
+list
+-
 iomanip
 -
 stdlib.h
 -
 utility
+-
+map
 -
 algorithm
 -
