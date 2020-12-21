@@ -15,7 +15,6 @@
 #include <algorithm>
 
 
-
 using namespace std;
 
 class Bidder {
@@ -46,7 +45,7 @@ int random_number(int lb, int ub) {
 
 //return mbbVec; vector<vector<myTuple>> mbbVec(num_bidders, vector<myTuple>(num_goods));
 //bspw: bidder 1: (mbb, 0), (mbb,1), ...
-vector<vector<myTuple>> mbbGraph (int num_bidders, int num_goods, vector<Bidder> bidders, vector<double> newPrices){
+vector<vector<myTuple>> mbbGraph(int num_bidders, int num_goods, vector<Bidder> bidders, vector<double> newPrices) {
 
 
     double mbb;
@@ -76,18 +75,19 @@ vector<vector<myTuple>> mbbGraph (int num_bidders, int num_goods, vector<Bidder>
     }
 
 
-
-return SortedMbbVec;
+    return SortedMbbVec;
 
 }
 
 
 // geht über den sortedVec und entscheidet pro Bidder, welche Güter er kauft;
 // dabei darf maximal 1 GE auf jedes Gut verbraucht werden (in summe über alle Bidder)
-vector<vector<double>> spendingGraph (int num_bidders, int num_goods, vector<Bidder> bidders, vector<double> newPrices, double spendingRestriction,  vector<double> quantItem, vector<vector<myTuple>> SortedMbbVec){
+vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidder> bidders, vector<double> newPrices,
+                                     double spendingRestriction, vector<double> quantItem,
+                                     vector<vector<myTuple>> SortedMbbVec) {
 
     //summe bisher spent per item
-    vector<double> spendPerItem (num_goods);
+    vector<double> spendPerItem(num_goods);
     /*for (int j = 0; j < num_goods; ++j) {
         spendPerItem[j] = 0;
     }*/
@@ -116,7 +116,8 @@ vector<vector<double>> spendingGraph (int num_bidders, int num_goods, vector<Bid
             double newShare = (bidders[iter].budget / newPrices[p.second]);
 
 
-            if (((spendPerItem[p.second] + (newShare * newPrices[p.second])) <= spendingRestriction) && quantItem[p.second] != 0 && bidders[iter].budget != 0){
+            if (((spendPerItem[p.second] + (newShare * newPrices[p.second])) <= spendingRestriction) &&
+                quantItem[p.second] != 0 && bidders[iter].budget != 0) {
 
                 //spendVec wird erhöht durch neues share des Guts * price des guts
                 spendVec[iter][p.second] = newShare * newPrices[p.second];
@@ -134,7 +135,7 @@ vector<vector<double>> spendingGraph (int num_bidders, int num_goods, vector<Bid
                 continue;
             }
 
-            if(bidders[iter].budget == 0){
+            if (bidders[iter].budget == 0) {
                 continue;
             }
 
@@ -145,23 +146,14 @@ vector<vector<double>> spendingGraph (int num_bidders, int num_goods, vector<Bid
         }
     }
 
-   /* cout << "\n";
-    //debugging - printing spending vector
-    cout << "Spending graph: \n";
-    for (int i = 0; i < num_bidders; ++i) {
-        for (int j = 0; j < num_goods; ++j) {
-            cout << spendVec[i][j] << " ";
-        }
-        cout << "\n";
-    }*/
 
     return spendVec;
 }
 
-vector<int> interestsGood (int num_bidders, int num_goods, vector<vector<myTuple>> SortedMbbVec){
+vector<int> interestsGood(int num_bidders, int num_goods, vector<vector<myTuple>> &SortedMbbVec) {
 
     //number of interested bidder in same good j (=interGood vector)
-    vector <int> interGood(num_goods);
+    vector<int> interGood(num_goods);
 
 
     //funktioniert das?
@@ -175,40 +167,75 @@ vector<int> interestsGood (int num_bidders, int num_goods, vector<vector<myTuple
 
     }
 
+    //for debugging
+    cout << "\n";
+    cout << "InterGood graph: \n";
+    for (int j = 0; j < num_goods; ++j) {
+            cout << interGood[j] << " ";
+        }
+        cout << "\n";
+
+
+
     return interGood;
 }
 
 
-vector<double> currentPrice (int num_bidders, int num_goods, vector<Bidder> bidders, vector<double> initPrices, double spendingRestriction,  vector<double> quantItem, vector<vector<myTuple>> &SortedMbbVec, vector<int> interGood){
+vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> bidders, vector<double> initPrices,
+                            double spendingRestriction, vector<double> quantItem, vector<vector<myTuple>> &SortedMbbVec,
+                            vector<int> &interGood) {
     //TODO: passen Preise schrittweise an
 
     vector<double> newPrices(num_goods);
 
     newPrices = initPrices;
 
-        for (int k = 0; k < num_goods; ++k){
-            //wichtig, dass hier nur über goods gegangen wird, da sonst preise überschrieben werden
-            newPrices[k] += newPrices[k]/interGood[k];
+    for (int k = 0; k < num_goods; ++k) {
+        //wichtig, dass hier nur über goods gegangen wird, da sonst preise überschrieben werden
+        //TODO: was ist wenn interGood = 0 ??
+        // TODO: interGood richtig berechnet?
+
+        if(interGood[k] > interGood[k]/2){
+            newPrices[k] += newPrices[k] / interGood[k];
         }
+
+        if(interGood[k] <= interGood[k]/2) {
+            newPrices[k] -= newPrices[k] / interGood[k];
+        }
+    }
 
 
     //initPrices = newPrices;
 
     SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, newPrices);
 
-    spendingGraph(num_bidders, num_goods, bidders, newPrices, spendingRestriction, quantItem, SortedMbbVec);
+    //TODO update spendVec bei jedem Loop
+    vector<vector<double>> spendVec = spendingGraph(num_bidders, num_goods, bidders, newPrices, spendingRestriction, quantItem, SortedMbbVec);
 
     //for debugging
     cout << "\n";
-    cout << "Die MBB Elemente in absteigender Reihenfolge pro Bidder: \n";
+    cout << "mbb-graph: \n";
     for (int i = 0; i < num_bidders; ++i) {
         cout << "Bidder " << i << ": " << "\n";
         //const iterator (läuft nur über das aktuelle mbbVec[i] = aktuelle Reihe i)
         for (const myTuple &p: SortedMbbVec[i]) {
-            cout << "(Element " << p.second << " mit MBB " << p.first << " )" << " ";
+            cout << "(" << p.second << "," << setprecision(3) << p.first << ")" << " ";
         }
         cout << "\n";
     }
+
+    //for debugging
+    cout << "\n";
+    cout << "Spending graph: \n";
+    for (int i = 0; i < num_bidders; ++i) {
+        for (int j = 0; j < num_goods; ++j) {
+            cout << spendVec[i][j] << " ";
+        }
+        cout << "\n";
+    }
+
+
+
 
 
 
@@ -278,45 +305,37 @@ int main() {
 
     for (int k = 0; k < num_goods; ++k) {
         //wichtig, dass hier ein spezifischer Bidder gewählt wird, da sonst Probleme bei num_goods > num_bidders und bidders[k].budget
-        initPrices[k] = bidders[0].budget/num_goods;
+        initPrices[k] = bidders[0].budget / num_goods;
     }
 
 
     //while( (accumulate(quantItem.begin(),quantItem.end(),0.0)) != 0.0 ) {
+    /*
+    Funktionsaufrufe folgen hier:
+    */
+
+    //mbb graph
+    vector<vector<myTuple>> SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, initPrices);
 
 
-
-        /*
-        Funktionsaufrufe folgen hier:
-        */
-
-        //mbb graph
-        vector<vector<myTuple>> SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, initPrices);
-
-        //interests per good
-        vector<int> interGood = interestsGood (num_bidders,num_goods, SortedMbbVec);
 
     //für debugging
-    for(int dur = 0; dur < 5; dur ++){
+    for (int dur = 0; dur < 5; dur++) {
+
+        //interests per good
+        vector<int> interGood = interestsGood(num_bidders, num_goods, SortedMbbVec);
 
 
         //current price computation
-        vector<double> newPrices = currentPrice(num_bidders, num_goods, bidders, initPrices, spendingRestriction,  quantItem, SortedMbbVec, interGood);
+        //TODO
+        vector<double> newPrices = currentPrice(num_bidders, num_goods, bidders, initPrices, spendingRestriction,
+                                                quantItem, SortedMbbVec, interGood);
 
-        //preisanpassung
+        //preisanpassung übernehmen für nächsten loop
         initPrices = newPrices;
 
-       /* //for debugging
-        cout << "\n";
-        cout << "Die MBB Elemente in absteigender Reihenfolge pro Bidder: \n";
-        for (int i = 0; i < num_bidders; ++i) {
-            cout << "Bidder " << i << ": " << "\n";
-            //const iterator (läuft nur über das aktuelle mbbVec[i] = aktuelle Reihe i)
-            for (const myTuple &p: SortedMbbVec[i]) {
-                cout << "(Element " << p.second << " mit MBB " << p.first << " )" << " ";
-            }
-            cout << "\n";
-        }*/
+
+
 
         //geht der funktionsaufruf?
         //vector<vector<double>> spendVec = spendingGraph(num_bidders, num_goods, bidders, newPrices, spendingRestriction, quantItem, SortedMbbVec);
