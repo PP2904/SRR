@@ -279,7 +279,8 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
  *  > Güter werden nicht komplett verkauft, d.h. keine market clearance
  *  > Utilities sind beim letzten Bidder am höchsten (?)
  *  > Budget wird komplett aufgebraucht (!!)
- *   > was passiert, wenn man das initiale budget randomized ?
+ *     > initiale budget IST randomisiert
+ *  > wie runden wir nun die fraktionalen Allocations ?
  */
 
 
@@ -440,6 +441,7 @@ int main() {
                cout << "\n";
                cout << "Utility: " << utility << "\n";
                cout << "Budget was: " << initBudget[i] << "\n";
+               cout << "\n";
            }
            cout << endl;
 
