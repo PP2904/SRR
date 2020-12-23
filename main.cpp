@@ -241,9 +241,9 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
         //const iterator (läuft nur über das aktuelle mbbVec[i] = aktuelle Reihe i)
         for (const myTuple &p: SortedMbbVec[i]) {
             if (i==0) {
-                myfile << "(" << p.second << "," << setprecision(3) << p.first << ")" << ", " << bidders[i].valuation[p.second] << " ";
+                myfile << "(" << p.second << "," << setprecision(3) << p.first << ")" << " ";
             }
-            cout << "(" << p.second << "," << setprecision(3) << p.first << ")" << ", " << bidders[i].valuation[p.second] << " ";
+            cout << "(" << p.second << "," << setprecision(3) << p.first << ")" << " ";
         }
         cout << "\n";
         myfile << "\n";
@@ -278,7 +278,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
  * FIXME
  *  > Güter werden nicht komplett verkauft, d.h. keine market clearance
  *  > Utilities sind beim letzten Bidder am höchsten (?)
- *
+ *  > Budget wird komplett aufgebraucht (!!)
  */
 
 
@@ -411,11 +411,6 @@ int main() {
         cout << endl;
 
 
-       /* for(int i = 0; i < num_bidders; ++i) {
-                cout << "Bidder " << i << " spent: " << accumulate(spendVec[i].begin(),spendVec[i].end(), 0.0) << "\n";
-            }
-
-        */
 
        //for debugging
        if(it == (num_iterations-1) ){
