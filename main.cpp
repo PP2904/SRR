@@ -86,7 +86,8 @@ vector<vector<myTuple>> mbbGraph(int num_bidders, int num_goods, vector<Bidder> 
 // geht über den sortedVec und entscheidet pro Bidder, welche Güter er kauft;
 // dabei darf maximal "spendingRestriction" GE auf jedes Gut verbraucht werden (in summe über alle Bidder)
 vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> &newPrices,
-                                     double spendingRestriction,  vector<double> &spendPerItem, vector<double> &quantItem,
+                                     double spendingRestriction, vector<double> &spendPerItem,
+                                     vector<double> &quantItem,
                                      vector<vector<myTuple>> &SortedMbbVec, vector<vector<double>> spendVec) {
 
 
@@ -96,9 +97,7 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
 
 
     //FIXME: spendPerItem wird bei jeder iteration iter wieder auf 0 gesetzt, warum?
-
-    vector<double> spendPerItem_Clone (num_goods);
-
+    // => weil keine Referenz (&) übergeben wurde von spendPerItem ...
 
 
 
@@ -123,7 +122,7 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
             }
 
 
-            if ((double(spendPerItem_Clone[p.second] + (newShare * newPrices[p.second])) <= spendingRestriction) &&
+            if ((double(spendPerItem[p.second] + (newShare * newPrices[p.second])) <= spendingRestriction) &&
                 quantItem[p.second] - newShare >= 0.0 && bidders[iter].budget != 0.0) {
 
 
@@ -136,7 +135,7 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
                 if (quantItem[p.second] < 0.001) quantItem[p.second] = 0.0;
 
                 //bisher für gut ausgegeben (overall agents)
-                spendPerItem_Clone[p.second] += newShare * newPrices[p.second];
+                spendPerItem[p.second] += newShare * newPrices[p.second];
 
 
                 // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
@@ -147,11 +146,9 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
 
         }
 
-        spendPerItem = spendPerItem_Clone;
+        //spendPerItem = spendPerItem_Clone;
 
     }
-
-
 
 
     return spendVec;
@@ -181,7 +178,7 @@ vector<int> interestsGood(int num_bidders, int num_goods, vector<vector<myTuple>
 
 
 vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> initPrices,
-                            double spendingRestriction, vector<double> spendPerItem, vector<double> &quantItem,
+                            double spendingRestriction, vector<double> &spendPerItem, vector<double> &quantItem,
                             vector<vector<myTuple>> &SortedMbbVec,
                             vector<int> &interGood, vector<vector<double>> &spendVec, vector<vector<double>> &update) {
 
@@ -234,7 +231,8 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
     interGood = interestsGood(num_bidders, num_goods, SortedMbbVec);
 
     //TODO update spendVec bei jedem Loop
-    spendVec = spendingGraph(num_bidders, num_goods, bidders, newPrices, spendingRestriction, spendPerItem, quantItem, SortedMbbVec,
+    spendVec = spendingGraph(num_bidders, num_goods, bidders, newPrices, spendingRestriction, spendPerItem, quantItem,
+                             SortedMbbVec,
                              spendVec);
 
 
@@ -280,7 +278,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
 //Gleichgewichtspreise nach PR-Dynamics Algo
 vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> &initPrices,
-                              int num_iterations) {
+                          int num_iterations) {
 
     for (int it = 0; it < num_iterations; ++it) {
 
@@ -467,7 +465,8 @@ int main() {
     for (int it = 0; it < num_iterations; ++it) {
 
         //current price computation
-        vector<double> newPrices = currentPrice(num_bidders, num_goods, bidders, initPrices, spendingRestriction, spendPerItem,
+        vector<double> newPrices = currentPrice(num_bidders, num_goods, bidders, initPrices, spendingRestriction,
+                                                spendPerItem,
                                                 quantItem, SortedMbbVec, interGood, spendVec, update);
 
 
