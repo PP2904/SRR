@@ -279,6 +279,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
  *  > Güter werden nicht komplett verkauft, d.h. keine market clearance
  *  > Utilities sind beim letzten Bidder am höchsten (?)
  *  > Budget wird komplett aufgebraucht (!!)
+ *   > was passiert, wenn man das initiale budget randomized ?
  */
 
 
@@ -305,10 +306,10 @@ int main() {
     cout << "What is the spending restriction?: ";
     cin >> spendingRestriction;
 
-    //budget
+    /*//budget
     double budgetAgent;
     cout << "Budget of an agent: ";
-    cin >> budgetAgent;
+    cin >> budgetAgent;*/
 
     // Anzahl Iterations pro 1 Handel (1x PR_Dynamics Algorithmus ausführen)
     int num_iterations;
@@ -326,11 +327,18 @@ int main() {
 
     vector<Bidder> bidders(num_bidders);
 
+    vector<double> initBudget(num_bidders);
+
     for (int k = 0; k < num_bidders; ++k) {
         bidders[k].valuation.resize(num_goods);
         //valuation pro Gut und Bidder
         for (auto &v: bidders[k].valuation) v = (random_number(0, 11));
-        bidders[k].budget = budgetAgent;
+
+        //budget
+        initBudget[k] = (random_number(1, 7));
+        bidders[k].budget = initBudget[k];
+        //bidders[k].budget = budgetAgent;
+
         bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
     }
 
@@ -431,6 +439,7 @@ int main() {
                }
                cout << "\n";
                cout << "Utility: " << utility << "\n";
+               cout << "Budget was: " << initBudget[i] << "\n";
            }
            cout << endl;
 
