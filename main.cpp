@@ -45,38 +45,38 @@ int random_number(int lb, int ub) {
 
 //return mbbVec; vector<vector<myTuple>> mbbVec(num_bidders, vector<myTuple>(num_goods));
 //bspw: bidder 1: (mbb, 0), (mbb,1), ...
-vector<vector<myTuple>> mbbGraph(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> &newPrices) {
+vector<vector<myTuple>> mbbGraph(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> &newPrices, vector<vector<myTuple>> &mbbVec) {
 
-
-    double mbb;
-
-
-    //vector Aufbau bspw: bidder 1: (mbb, 0), (mbb,1), ...
-    vector<vector<myTuple>> mbbVec(num_bidders, vector<myTuple>(num_goods));
 
     //sorted vector for mbb
     vector<vector<myTuple>> SortedMbbVec(num_bidders, vector<myTuple>(num_goods));
 
+    double mbb;
+
+
+
 
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            if((bidders[i].valuation[j] / newPrices[j]) > 0) {
+            //FIXME: macht die if-Abfrage Sinn?
+           //if(mbbVec[i][j].first > 0) {
 
                 mbb = bidders[i].valuation[j] / newPrices[j];
                 if (mbb < 0.001) mbb = 0;
 
                 mbbVec[i][j] = make_pair(mbb, j);
-            }
+           //}
+           continue;
 
         }
 
+
         //sortiere mbb vector nach größe bzgl. mbb wert (first value im tuple)
-
-
         sort(mbbVec[i].begin(), mbbVec[i].end(), greater<>());
         SortedMbbVec = mbbVec;
     }
 
+    mbbVec = SortedMbbVec;
 
     return SortedMbbVec;
 
@@ -84,20 +84,18 @@ vector<vector<myTuple>> mbbGraph(int num_bidders, int num_goods, vector<Bidder> 
 
 
 // geht über den sortedVec und entscheidet pro Bidder, welche Güter er kauft;
-// dabei darf maximal 1 GE auf jedes Gut verbraucht werden (in summe über alle Bidder)
+// dabei darf maximal "spendingRestriction" GE auf jedes Gut verbraucht werden (in summe über alle Bidder)
 vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> &newPrices,
                                      double spendingRestriction, vector<double> &quantItem,
-                                     vector<vector<myTuple>> &SortedMbbVec, vector<vector<double>> &spendVec) {
+                                     vector<vector<myTuple>> &SortedMbbVec, vector<vector<double>> spendVec) {
 
     //summe bisher spent per item
     vector<double> spendPerItem(num_goods);
 
 
-    //spending vector  for spending graph Q(x);
+    //spendVec = spending vector  for spending graph Q(x);
     // Bidder xy: Gut1, Gut2, ...
-    vector<vector<double>> NewSpendVec(num_bidders, vector<double>(num_goods));
 
-    NewSpendVec = spendVec;
 
     //spending graph erzeugen
     for (int iter = 0; iter < num_bidders; iter++) {
@@ -109,33 +107,35 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
             //number des aktuellen Goods
             int numGood = p.second;
 
+
+            //TODO: ist hier noch ein Fehler?
             //new share of good
-            //TODO: hier ist noch ein Fehler
-            double newShare = min(bidders[iter].budget/ newPrices[p.second],spendingRestriction);
+            double newShare = double(double(bidders[iter].budget/num_goods) / newPrices[p.second]);
 
             if (bidders[iter].budget == 0) {
                 break;
             }
 
 
-            if (((spendPerItem[p.second] + (newShare * newPrices[p.second])) <= spendingRestriction) &&
-                    (quantItem[p.second]-newShare) >= 0 && bidders[iter].budget != 0) {
+            if ((double(spendPerItem[p.second] + (newShare * newPrices[p.second])) <= spendingRestriction) &&
+                    quantItem[p.second]-newShare >= 0.0 && bidders[iter].budget != 0.0) {
 
-                //TODO: spendVec funktioniert nicht !!!
+
                 //spendVec wird erhöht durch neues share des Guts * price des guts
-                NewSpendVec[iter][p.second] += newShare * newPrices[p.second];
+                spendVec[iter][p.second] += newShare * newPrices[p.second];
+
 
                 //item wurde vekauft und muss daher dezimiert werden
                 quantItem[p.second] -= newShare;
-                if(quantItem[p.second] < 0.001) quantItem[p.second] = 0;
+                if(quantItem[p.second] < 0.001) quantItem[p.second] = 0.0;
 
                 //bisher für gut ausgegeben (overall agents)
                 spendPerItem[p.second] += newShare * newPrices[p.second];
 
 
-                /*// (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
+             // (! //ACHTUNG: erst nach dem quantItem dezimiert ist, kann budget angepasst werde !)
                 bidders[iter].budget -= newShare * newPrices[p.second];
-*/
+
                 break;
             }
 
@@ -146,7 +146,7 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
         }
     }
 
-    //spendVec = NewSpendVec;
+
 
 
     return spendVec;
@@ -191,27 +191,6 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
 
 
-    //for (int k = 0; k < num_goods; ++k) {
-        //wichtig, dass hier nur über goods gegangen wird, da sonst preise überschrieben werden
-        //TODO: was ist wenn interGood = 0 ??
-
-
-      /*
-
-        //newPrices[k] += newPrices[k] / interGood[k];
-
-        if(interGood[k] >= num_bidders/2){
-            newPrices[k] += 2 * newPrices[k] / interGood[k];
-        }
-
-        if(interGood[k] < num_bidders/2) {
-            newPrices[k] -= newPrices[k] / interGood[k];
-        }
-
-    }
-*/
-
-
       //PR-D preisanpassung; warum sinken die mbbs dennoch auf 0 mit iterations -> unendlich (in dem Fall schon 25 =) ??
       // Vermutung: die Preise werden immer geringer und dadurch das Verhältnis von valuation/preis ... )
 
@@ -241,8 +220,9 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
     }
 
 
+/* FUNKTIONSAUFRUFE */
 
-    SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, newPrices);
+    SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, newPrices, SortedMbbVec);
 
     interGood = interestsGood(num_bidders, num_goods, SortedMbbVec);
 
@@ -261,9 +241,9 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
         //const iterator (läuft nur über das aktuelle mbbVec[i] = aktuelle Reihe i)
         for (const myTuple &p: SortedMbbVec[i]) {
             if (i==0) {
-                myfile << "(" << p.second << "," << setprecision(3) << p.first << ")" << " ";
+                myfile << "(" << p.second << "," << setprecision(3) << p.first << ")" << ", " << bidders[i].valuation[p.second] << " ";
             }
-            cout << "(" << p.second << "," << setprecision(3) << p.first << ")" << " ";
+            cout << "(" << p.second << "," << setprecision(3) << p.first << ")" << ", " << bidders[i].valuation[p.second] << " ";
         }
         cout << "\n";
         myfile << "\n";
@@ -278,7 +258,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
     cout << "\n";
 
 
-    //for debugging
+   /* //for debugging
     cout << "\n";
     cout << "Spending graph: \n";
     for (int i = 0; i < num_bidders; ++i) {
@@ -287,7 +267,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
         }
         cout << "\n";
     }
-
+*/
 
     return newPrices;
 
@@ -295,11 +275,9 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
 
 /*
- * Idee: 1) wir berechnen mbb graph, spending grap und die preise in separaten funktionen;
- *       2) jedes Mal, wenn wir den Preis verändern, geben wir mbb-graph und spending graph aus (für spending graph
- *              sind die Allokationen der Input := G(x) ) => Zusammenhang allocs und prices?
- *       3) der Preis für ein beliebtes Gut wird schrittweise erhöht, der für ein weniger beliebtes Gut erniedrigt (um wieviel?)
- *          => dadurch erhalten wir besser Infos über die Zuteilung von Güter zu Bietern
+ * FIXME
+ *  > Güter werden nicht komplett verkauft, d.h. keine market clearance
+ *  > Utilities sind beim letzten Bidder am höchsten (?)
  *
  */
 
@@ -356,30 +334,32 @@ int main() {
         bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
     }
 
-    /*for (int k = 0; k < num_bidders; ++k) {
-        bidders[k].valuation.resize(num_goods);
-        //valuation pro Gut und Bidder
-        for (int i = 0; i < num_goods; i++) {
-            bidders[k].valuation[i] = (random_number(0, 6));
-        }
-        bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
-        bidders[k].budget = budgetAgent;
-    }*/
-
 
     //prices goods randomly initiated
     vector<double> initPrices(num_goods);
 
     for (int k = 0; k < num_goods; ++k) {
         //wichtig, dass hier ein spezifischer Bidder gewählt wird, da sonst Probleme bei num_goods > num_bidders und bidders[k].budget
-        initPrices[k] = num_goods;
-                //bidders[0].budget / num_goods;
+        initPrices[k] = 1;
+        //bidders[0].budget / num_goods;
     }
 
     //price update vector
     vector<vector<double>> update(bidders.size(), vector<double>(num_goods));
 
 
+    vector<vector<double>> spendVec(num_bidders, vector<double>(num_goods));
+
+
+    //vector Aufbau bspw: bidder 1: (mbb, 0), (mbb,1), ...
+    vector<vector<myTuple>> mbbVec(num_bidders, vector<myTuple>(num_goods));
+
+    for(int i = 0; i < num_bidders; ++i){
+        for (int k = 0; k < num_goods; ++k) {
+            mbbVec[i][k].first = 1;
+            mbbVec[i][k].second = k;
+        }
+    }
 
 
     /*
@@ -387,9 +367,8 @@ int main() {
     */
 
     //mbb graph
-    vector<vector<myTuple>> SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, initPrices);
+    vector<vector<myTuple>> SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, initPrices, mbbVec);
 
-    vector<vector<double>> spendVec = spendingGraph(num_bidders, num_goods, bidders, initPrices, spendingRestriction, quantItem, SortedMbbVec, spendVec);
 
     //interests per good
     vector<int> interGood = interestsGood(num_bidders, num_goods, SortedMbbVec);
@@ -422,8 +401,6 @@ int main() {
         }
 
 
-
-
        //print for debugging
         cout << "\n";
         cout << "Iteration " << it << ":\n";
@@ -434,15 +411,41 @@ int main() {
         cout << endl;
 
 
-        for(int i = 0; i < num_bidders; ++i) {
-                cout << "Bidder " << i << " spent: " << accumulate(bidders[i].spent.begin(),bidders[i].spent.end(), 0.0) << "\n";
+       /* for(int i = 0; i < num_bidders; ++i) {
+                cout << "Bidder " << i << " spent: " << accumulate(spendVec[i].begin(),spendVec[i].end(), 0.0) << "\n";
             }
 
+        */
+
+       //for debugging
+       if(it == (num_iterations-1) ){
+
+           //print utility
+           double utility = 0.0;
+
+           //cout << "last, but not least";
+
+           //print spending vector
+           for(int i = 0; i < num_bidders; ++i) {
+               cout << "Bidder " << i << " : " << "\n";
+               for (int j = 0; j < num_goods; ++j) {
+                    cout << spendVec[i][j] << " | ";
+               }
+               for (int j = 0; j < num_goods; ++j) {
+                   utility += newPrices[j]*spendVec[i][j];
+               }
+               cout << "\n";
+               cout << "Utility: " << utility << "\n";
+           }
+           cout << endl;
 
 
+        }
 
 
     }
+
+
 
 
     return 0;
