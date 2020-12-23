@@ -276,9 +276,11 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
 }
 
-//Gleichgewichtspreise nach PR-Dynamics Algo
+//Gleichgewichtspreise nach PR-Dynamics Algo => Vergleichswert
 vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> &initPrices,
                           int num_iterations) {
+
+    vector<double> utility(num_bidders);
 
     for (int it = 0; it < num_iterations; ++it) {
 
@@ -309,27 +311,20 @@ vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidder
             }
         }
 
-/*
-        //von Max utility und utility (im equilibrium sind diese gleich)
-        vector<double> utility(num_bidders);
-        vector<double> max_utility(num_bidders);
-        for (int b = 0; b < num_bidders; ++b) {
-            max_utility[b] = 0;
-            for (int i = 0; i < num_goods; ++i) {
-                utility[b] +=
-                        bidders[b].valuation[i] * bidders[b].spent[i] / initPrices[i]; //Aufpassen wenn prices[i] = 0!
-                if (max_utility[b] < bidders[b].valuation[i] / initPrices[i]) {
-                    max_utility[b] = bidders[b].valuation[i] / initPrices[i];
+
+      /*  //TODO: sind das korrekte Werte?
+        if (it == (num_iterations - 1)) {
+            for (int b = 0; b < num_bidders; ++b) {
+                for (int i = 0; i < num_goods; ++i) {
+                    utility[b] += double(bidders[b].valuation[i] * (bidders[b].spent[i] / initPrices[i]));
                 }
+                cout << "Utility (PR-D) für Bidder " << b << " ist: " << utility[b] << "\n";
             }
 
-            max_utility[b] *= bidders[b].budget;
-        }*/
-
-
+        }
+*/
 
     }
-
     return initPrices;
 }
 
@@ -342,8 +337,7 @@ vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidder
  *  > Budget wird komplett aufgebraucht (!!)
  *     > initiale budget IST randomisiert
  *  > wie runden wir nun die fraktionalen Allocations ?
- *  > spending restrictions funktionieren nicht pro Gut (überalle Bidder)
- *  > FIXME: spendPerItem wird bei jeder iteration iter wieder auf 0 gesetzt, warum?
+ *
  */
 
 
@@ -501,7 +495,7 @@ int main() {
 
         //for debugging
         if (it == (num_iterations - 1)) {
-/*
+
             //Gleichgewichtspreise nach PR-Dynamics Algo
             initPrices = PrDynamics (num_bidders, num_goods, bidders, initPrices, num_iterations);
 
@@ -510,7 +504,7 @@ int main() {
                     cout << "(PR-D) Good " << j << " costs: " << initPrices[j] << "\n";
             }
 
-            */
+
             cout << "\n";
             for (int i = 0; i < num_bidders; ++i) {
                 if (bidders[i].budget < 0.01) {
@@ -542,7 +536,7 @@ int main() {
             cout << endl;
 
             for (int j = 0; j < num_goods; ++j) {
-                cout << quantItem[j];
+                cout << spendPerItem[j];
                 cout << "\n";
             }
 
