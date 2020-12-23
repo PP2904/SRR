@@ -276,6 +276,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
 /*
  * FIXME
+ *  > Ergebnisse validieren !!
  *  > Güter werden nicht komplett verkauft, d.h. keine market clearance
  *  > Utilities sind beim letzten Bidder am höchsten (?)
  *  > Budget wird komplett aufgebraucht (!!)
@@ -405,7 +406,6 @@ int main() {
         for(int i = 0; i < num_goods; ++i) {
             if (quantItem[i] < 0.01) {
                 quantItem[i] = 0;
-                continue;
             }
         }
 
@@ -421,29 +421,44 @@ int main() {
 
 
 
-       //for debugging
+
+
+        //for debugging
        if(it == (num_iterations-1) ){
 
-           //print utility
+
+           for(int i = 0; i < num_bidders; ++i) {
+               if(bidders[i].budget < 0.01){
+                   bidders[i].budget = 0;
+               }
+           }
+
+
+           //print utility = valuation * menge (des guts) := bidders[i].valuation[j]*(spendVec[i][j]/newPrices[j])
            double utility = 0.0;
 
            //cout << "last, but not least";
 
            //print spending vector
            for(int i = 0; i < num_bidders; ++i) {
-               cout << "Bidder " << i << " : " << "\n";
+               cout << "Bidder " << i << " spends: " << "\n";
                for (int j = 0; j < num_goods; ++j) {
                     cout << spendVec[i][j] << " | ";
                }
                for (int j = 0; j < num_goods; ++j) {
-                   utility += newPrices[j]*spendVec[i][j];
+                   utility += bidders[i].valuation[j]*(spendVec[i][j]/newPrices[j]);
                }
                cout << "\n";
                cout << "Utility: " << utility << "\n";
-               cout << "Budget was: " << initBudget[i] << "\n";
+               cout << "Budget was: " << initBudget[i] << " (now: " << bidders[i].budget << ")" << "\n";
                cout << "\n";
            }
            cout << endl;
+
+           for (int j = 0; j < num_goods; ++j) {
+               cout << quantItem[j];
+               cout << "\n";
+           }
 
 
         }
