@@ -64,9 +64,10 @@ vector<vector<myTuple>> mbbGraph(int num_bidders, int num_goods, vector<Bidder> 
             mbb = bidders[i].valuation[j] / newPrices[j];
             if (mbb < 0.001) mbb = 0;
 
+            //Paar-Reihenfolge ist verkehrt zum Print-out
             mbbVec[i][j] = make_pair(mbb, j);
             //}
-            continue;
+            //continue;
 
         }
 
@@ -182,8 +183,8 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                             vector<vector<myTuple>> &SortedMbbVec,
                             vector<int> &interGood, vector<vector<double>> &spendVec, vector<vector<double>> &update) {
 
-    ofstream myfile;
-    myfile.open("data.txt", std::ios_base::app);
+   /* ofstream myfile;
+    myfile.open("data.txt", std::ios_base::app);*/
 
     //passen Preise schrittweise an
     vector<double> newPrices(num_goods);
@@ -208,15 +209,18 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
     for (int i = 0; i < bidders.size(); ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            update[i][j] = bidders[i].valuation[j] * bidders[i].spent[j] / newPrices[j];
+            update[i][j] = (bidders[i].valuation[j] * bidders[i].spent[j]) / newPrices[j];
 
         }
     }
 
     for (int i = 0; i < bidders.size(); ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            bidders[i].spent[j] =
-                    bidders[i].budget * update[i][j] / accumulate(update[i].begin(), update[i].end(), 0.0);
+            if(accumulate(update[i].begin(), update[i].end(), 0.0) == 0){
+                printf("update vector is zero");
+                exit(EXIT_FAILURE);
+            }
+            bidders[i].spent[j] = ( bidders[i].budget * update[i][j] )  / accumulate(update[i].begin(), update[i].end(), 0.0);
 
         }
     }
@@ -243,13 +247,14 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
         cout << "Bidder " << i << ": " << "\n";
         //const iterator (läuft nur über das aktuelle mbbVec[i] = aktuelle Reihe i)
         for (const myTuple &p: SortedMbbVec[i]) {
-            if (i == 0) {
+            //for debugging
+            /*if (i == 0) {
                 myfile << "(" << p.second << "," << setprecision(3) << p.first << ")" << " ";
-            }
+            }*/
             cout << "(" << p.second << "," << setprecision(3) << p.first << ")" << " ";
         }
         cout << "\n";
-        myfile << "\n";
+        //myfile << "\n";
     }
 
     //for debugging
@@ -277,7 +282,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 }
 
 //Gleichgewichtspreise nach PR-Dynamics Algo => Vergleichswert
-vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> &initPrices,
+vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidders_PRD, vector<double> &initPrices,
                           int num_iterations) {
 
     vector<double> utility(num_bidders);
@@ -288,41 +293,40 @@ vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidder
         // die jeder bidder ausgegeben hat, gesetzt
         for (int j = 0; j < num_goods; ++j) {
             //initPrices[j] = 0;
-            for (int i = 0; i < bidders.size(); ++i)
-                initPrices[j] += bidders[i].spent[j];
+            for (int i = 0; i < bidders_PRD.size(); ++i)
+                initPrices[j] += bidders_PRD[i].spent[j];
 
         }
 
         //update der valuations und spents pro bidder
-        vector<vector<double>> update(bidders.size(), vector<double>(num_goods)); //
-        for (int i = 0; i < bidders.size(); ++i) {
+        vector<vector<double>> update(bidders_PRD.size(), vector<double>(num_goods)); //
+        for (int i = 0; i < bidders_PRD.size(); ++i) {
             for (int j = 0; j < num_goods; ++j) {
-                update[i][j] = bidders[i].valuation[j] * bidders[i].spent[j] / initPrices[j];
+                update[i][j] = bidders_PRD[i].valuation[j] * bidders_PRD[i].spent[j] / initPrices[j];
 
             }
         }
 
         //new bid vector for next iteration
-        for (int i = 0; i < bidders.size(); ++i) {
+        for (int i = 0; i < bidders_PRD.size(); ++i) {
             for (int j = 0; j < num_goods; ++j) {
-                bidders[i].spent[j] =
-                        bidders[i].budget * update[i][j] / accumulate(update[i].begin(), update[i].end(), 0.0);
+                bidders_PRD[i].spent[j] =  bidders_PRD[i].budget * update[i][j] / accumulate(update[i].begin(), update[i].end(), 0.0);
 
             }
         }
 
 
-      /*  //TODO: sind das korrekte Werte?
+      //TODO: sind das korrekte Werte?
         if (it == (num_iterations - 1)) {
             for (int b = 0; b < num_bidders; ++b) {
                 for (int i = 0; i < num_goods; ++i) {
-                    utility[b] += double(bidders[b].valuation[i] * (bidders[b].spent[i] / initPrices[i]));
+                    utility[b] += double(bidders_PRD[b].valuation[i] * (bidders_PRD[b].spent[i] / initPrices[i]));
                 }
                 cout << "Utility (PR-D) für Bidder " << b << " ist: " << utility[b] << "\n";
             }
 
         }
-*/
+
 
     }
     return initPrices;
@@ -331,10 +335,10 @@ vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidder
 
 /*
  * FIXME
- *  > Ergebnisse validieren !!
+ *  > Ergebnisse validieren !! Vor allem die Kosten !!!
  *  > Güter werden nicht komplett verkauft, d.h. keine market clearance
  *  > Utilities sind beim letzten Bidder am höchsten (?)
- *  > Budget wird komplett aufgebraucht (!!)
+ *  > Budget wird (meist, außer bei sehr viele Bietern/Gütern) komplett aufgebraucht (!!)
  *     > initiale budget IST randomisiert
  *  > wie runden wir nun die fraktionalen Allocations ?
  *
@@ -383,6 +387,7 @@ int main() {
         quantItem[j] = quant;
     }
 
+    //bidders vector for rounding
     vector<Bidder> bidders(num_bidders);
 
     vector<double> initBudget(num_bidders);
@@ -393,12 +398,33 @@ int main() {
         for (auto &v: bidders[k].valuation) v = (random_number(0, 11));
 
         //budget
-        initBudget[k] = (random_number(1, 20));
+        initBudget[k] = (random_number(20, 40));
         bidders[k].budget = initBudget[k];
         //bidders[k].budget = budgetAgent;
 
         bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
     }
+
+
+    //bidders vector for reference (PR-Dynamics algorithm)
+    vector<Bidder> bidders_PRD(num_bidders);
+
+    vector<double> initBudget_PRD(num_bidders);
+
+    for (int k = 0; k < num_bidders; ++k) {
+        bidders_PRD[k].valuation.resize(num_goods);
+        //valuation pro Gut und Bidder
+        for (auto &v: bidders_PRD[k].valuation) v = (random_number(0, 11));
+
+        //budget
+        initBudget_PRD[k] = (random_number(1, 20));
+        bidders_PRD[k].budget = initBudget_PRD[k];
+        //bidders[k].budget = budgetAgent;
+
+        bidders_PRD[k].spent.resize(num_goods, bidders_PRD[0].budget / (double) num_goods);
+    }
+
+
 
 
     //prices goods randomly initiated
@@ -435,8 +461,6 @@ int main() {
     Funktionsaufrufe folgen hier:
     */
 
-
-
     //mbb graph
     vector<vector<myTuple>> SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, initPrices, mbbVec);
 
@@ -450,13 +474,19 @@ int main() {
     vector<double> max_utility(num_bidders);
 
 
+    /*
+        Iterations folgen hier:
+   */
 
-
-    //while( (accumulate(quantItem.begin(),quantItem.end(),0.0)) != 0.0 ) {
 
     //für debugging
     //wiederholung für PR_D Algorithmus
+
     for (int it = 0; it < num_iterations; ++it) {
+
+        ofstream myfile;
+        myfile.open("data.txt", std::ios_base::app);
+
 
         //current price computation
         vector<double> newPrices = currentPrice(num_bidders, num_goods, bidders, initPrices, spendingRestriction,
@@ -491,18 +521,14 @@ int main() {
 
 
 
-
-
         //for debugging
         if (it == (num_iterations - 1)) {
 
-            //Gleichgewichtspreise nach PR-Dynamics Algo
-            initPrices = PrDynamics (num_bidders, num_goods, bidders, initPrices, num_iterations);
+            myfile << "Bidders: " << num_bidders << " Goods: " << num_goods << " Iterations: " << num_iterations
+                   << " spending restriction: " << spendingRestriction << " quantity per item: " << quant << "\n";
 
-
-            for (int j = 0; j < num_goods; ++j) {
-                    cout << "(PR-D) Good " << j << " costs: " << initPrices[j] << "\n";
-            }
+          //Gleichgewichtspreise nach PR-Dynamics Algo
+            initPrices = PrDynamics (num_bidders, num_goods, bidders_PRD, initPrices, num_iterations);
 
 
             cout << "\n";
@@ -511,6 +537,19 @@ int main() {
                     bidders[i].budget = 0;
                 }
             }
+
+            //print for debugging
+            cout << "\n";
+            myfile << "\n";
+            cout << "Final:\n";
+            myfile << "Final:\n";
+            for (int i = 0; i < num_goods; ++i) {
+                cout << "Good " << i << " costs: " << newPrices[i] << " (PR-D: " << initPrices[i] << " )" << "\n";
+                myfile << "Good " << i << " costs: " << newPrices[i] << " (PR-D: " << initPrices[i] << " )" << "\n";
+            }
+            cout << endl;
+            myfile << endl;
+
 
 
             //print utility = valuation * menge (des guts) := bidders[i].valuation[j]*(spendVec[i][j]/newPrices[j])
@@ -521,25 +560,40 @@ int main() {
             //print spending vector
             for (int i = 0; i < num_bidders; ++i) {
                 cout << "Bidder " << i << " spends: " << "\n";
+                myfile << "Bidder " << i << " spends: " << "\n";
                 for (int j = 0; j < num_goods; ++j) {
                     cout << spendVec[i][j] << " | ";
+                    myfile << spendVec[i][j] << " | ";
                 }
                 for (int j = 0; j < num_goods; ++j) {
                     utility += bidders[i].valuation[j] * (spendVec[i][j] / newPrices[j]);
                 }
                 cout << "\n";
+                myfile << "\n";
                 cout << "Utility: " << utility << "\n";
-                cout << "Budget was: " << initBudget[i] << " (now: " << bidders[i].budget << ")" << "\n";
+                myfile << "Utility: " << utility << "\n";
+                cout << "Budget was: " << initBudget[i] << " (left with: " << bidders[i].budget << ")" << "\n";
+                myfile << "Budget was: " << initBudget[i] << " (left with: " << bidders[i].budget << ")" << "\n";
                 cout << "\n";
+                myfile << "\n";
             }
 
-            cout << endl;
-
+            //wieviel bleibt pro Gut übrig:
+            cout << "available items: \n";
             for (int j = 0; j < num_goods; ++j) {
-                cout << spendPerItem[j];
-                cout << "\n";
+                cout << "Good " << j << " : " << quantItem[j] << "\n";
+                myfile << "Good " << j << " : " << quantItem[j] << "\n";
             }
 
+           myfile << "\n";
+
+
+            /*  //for debuggin: testing if spendPerItem is met
+             for (int j = 0; j < num_goods; ++j) {
+                 cout << spendPerItem[j];
+                 cout << "\n";
+             }
+ */
 
         }
 
