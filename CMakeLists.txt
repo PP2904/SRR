@@ -3,4 +3,4 @@ project(SRR)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(SRR main.cpp)
+add_executable(SRR main.cpp PR_D.h)

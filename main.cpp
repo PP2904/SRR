@@ -13,10 +13,13 @@
 #include <utility>
 #include <map>
 #include <algorithm>
+#include "PR_D.cpp"
+#include "PR_D.h"
 
 
 using namespace std;
 
+/*
 class Bidder {
 public:
     vector<double> valuation; //was mir ein gut wert ist
@@ -25,6 +28,7 @@ public:
 
     friend ostream &operator<<(ostream &os, const Bidder &b);
 };
+*/
 
 ostream &operator<<(ostream &os, const Bidder &b) {
     for (int j = 0; j < b.spent.size(); ++j) {
@@ -36,12 +40,14 @@ ostream &operator<<(ostream &os, const Bidder &b) {
 //type def für: vector<vector<mytuple>> mbbVec
 typedef pair<double, int> myTuple;
 
+/*
 
 int random_number(int lb, int ub) {
     static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     static std::mt19937 engine(seed);
     return (engine() % (ub - lb + 1)) + lb;
 }
+*/
 
 
 //return mbbVec; vector<vector<myTuple>> mbbVec(num_bidders, vector<myTuple>(num_goods));
@@ -183,8 +189,8 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                             vector<vector<myTuple>> &SortedMbbVec,
                             vector<int> &interGood, vector<vector<double>> &spendVec, vector<vector<double>> &update) {
 
-   /* ofstream myfile;
-    myfile.open("data.txt", std::ios_base::app);*/
+    ofstream myfile;
+    myfile.open("data.txt", std::ios_base::app);
 
     //passen Preise schrittweise an
     vector<double> newPrices(num_goods);
@@ -198,9 +204,22 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
     // Vermutung: die Preise werden immer geringer und dadurch das Verhältnis von valuation/preis ... )
 
     for (int k = 0; k < num_goods; ++k) {
-        for (int i = 0; i < bidders.size(); ++i)
+        for (int i = 0; i < bidders.size(); ++i){
             newPrices[k] += bidders[i].spent[k];
+        }
     }
+
+
+    /* //idea: if interGood > bidders/2 => preise erhöhen
+     //idea: if interGood <= bidders/2 => preise erniedrigen
+     if(interGood[k] > (num_bidders/2)){
+         newPrices[k] += bidders[i].spent[k];
+     }
+     else{
+         newPrices[k] -= 100*(bidders[i].spent[k]);
+     }*/
+
+
 
     //Problem ist, dass spent bereits im 2. Durchlauf = 0 ist. <- wird nicht upgedatet => update = 0 und dann teilen wir im
     //3. for loop hier durch update = 0 ...
@@ -216,7 +235,24 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
     for (int i = 0; i < bidders.size(); ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            if(accumulate(update[i].begin(), update[i].end(), 0.0) == 0){
+            //FIXME: Problem: irgendwann ist der update vector 0, weil spent-vector sehr klein ist und daher
+            // nur noch wenig hinzukommt;
+            if(accumulate(update[i].begin(), update[i].end(), 0.0) <= 0.001){
+                cout << endl;
+                //wieviel bleibt pro Gut übrig:
+                cout << "available items: \n";
+                for (int j = 0; j < num_goods; ++j) {
+                    cout << "Good " << j << " : " << quantItem[j] << "\n";
+                    myfile << "Good " << j << " : " << quantItem[j] << "\n";
+                }
+                for (int i = 0; i < bidders.size(); ++i) {
+                    cout << "(Bidder " << i << " left with: " << bidders[i].budget << ")" << "\n";
+                }
+                //for debugging
+                for (int j = 0; j < num_goods; ++j) {
+                    cout << "\n";
+                    cout << "Für Good " << j << " wurden " <<  spendPerItem[j] << " Geldeinheiten ausgegeben" << "\n";
+                 }
                 printf("update vector is zero");
                 exit(EXIT_FAILURE);
             }
@@ -316,16 +352,28 @@ vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidder
         }
 
 
-      //TODO: sind das korrekte Werte?
+
+        if(it == (num_iterations - 1)){
+            for (int j = 0; j < num_goods; ++j) {
+                cout << initPrices[j] << "\n";
+
+            }
+
+        }
+
+
+
+      /*//TODO: sind das korrekte Werte?
         if (it == (num_iterations - 1)) {
             for (int b = 0; b < num_bidders; ++b) {
                 for (int i = 0; i < num_goods; ++i) {
                     utility[b] += double(bidders_PRD[b].valuation[i] * (bidders_PRD[b].spent[i] / initPrices[i]));
                 }
                 cout << "Utility (PR-D) für Bidder " << b << " ist: " << utility[b] << "\n";
+                cout << "\n";
             }
 
-        }
+        }*/
 
 
     }
@@ -392,13 +440,19 @@ int main() {
 
     vector<double> initBudget(num_bidders);
 
+    double low_Budget = 1;
+    double up_Budget = 10;
+
+    double low_Val = 0;
+    double up_Val = 11;
+
     for (int k = 0; k < num_bidders; ++k) {
         bidders[k].valuation.resize(num_goods);
         //valuation pro Gut und Bidder
-        for (auto &v: bidders[k].valuation) v = (random_number(0, 11));
+        for (auto &v: bidders[k].valuation) v = (random_number(low_Val, up_Val));
 
         //budget
-        initBudget[k] = (random_number(20, 40));
+        initBudget[k] = (random_number(low_Budget, up_Budget));
         bidders[k].budget = initBudget[k];
         //bidders[k].budget = budgetAgent;
 
@@ -414,10 +468,10 @@ int main() {
     for (int k = 0; k < num_bidders; ++k) {
         bidders_PRD[k].valuation.resize(num_goods);
         //valuation pro Gut und Bidder
-        for (auto &v: bidders_PRD[k].valuation) v = (random_number(0, 11));
+        for (auto &v: bidders_PRD[k].valuation) v = (random_number(low_Val, up_Val));
 
         //budget
-        initBudget_PRD[k] = (random_number(1, 20));
+        initBudget_PRD[k] = (random_number(low_Budget, up_Budget));
         bidders_PRD[k].budget = initBudget_PRD[k];
         //bidders[k].budget = budgetAgent;
 
@@ -478,11 +532,26 @@ int main() {
         Iterations folgen hier:
    */
 
+    //rufe dann PR_D.cpp auf
+    if(spendingRestriction == 0){
+
+        //hier möchte ich funktion aufrufen aus PR_D.cpp
+        PrDynamics_old(num_bidders, num_goods, bidders_PRD, initPrices,
+                       num_iterations);
+
+        cout << "\n";
+        cout << "No restrictions. Therefore, we compute the PR-Dynamics Algorithm.";
+        cout << "\n";
+        exit(EXIT_FAILURE);
+
+
+
+    }
 
     //für debugging
     //wiederholung für PR_D Algorithmus
-
     for (int it = 0; it < num_iterations; ++it) {
+
 
         ofstream myfile;
         myfile.open("data.txt", std::ios_base::app);
