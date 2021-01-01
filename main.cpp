@@ -13,7 +13,7 @@
 #include <utility>
 #include <map>
 #include <algorithm>
-#include "PR_D.cpp"
+#include "mainPR_D.cpp"
 #include "PR_D.h"
 
 
@@ -187,7 +187,7 @@ vector<int> interestsGood(int num_bidders, int num_goods, vector<vector<myTuple>
 vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> initPrices,
                             double spendingRestriction, vector<double> &spendPerItem, vector<double> &quantItem,
                             vector<vector<myTuple>> &SortedMbbVec,
-                            vector<int> &interGood, vector<vector<double>> &spendVec, vector<vector<double>> &update) {
+                            vector<int> &interGood, vector<vector<double>> &spendVec, vector<vector<double>> &update,  vector<double> initBudget) {
 
     ofstream myfile;
     myfile.open("data.txt", std::ios_base::app);
@@ -204,6 +204,8 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
     // Vermutung: die Preise werden immer geringer und dadurch das Verhältnis von valuation/preis ... )
 
     for (int k = 0; k < num_goods; ++k) {
+        //TODO: verändertert, dass alle Budgets ausgegeben werden (oder alle items aufgebraucht)
+        newPrices[k] = 0;
         for (int i = 0; i < bidders.size(); ++i){
             newPrices[k] += bidders[i].spent[k];
         }
@@ -233,6 +235,8 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
         }
     }
 
+
+    //TODO: hier wird eingestiegen, wenn update vector 0 (fast 0) ist (!)
     for (int i = 0; i < bidders.size(); ++i) {
         for (int j = 0; j < num_goods; ++j) {
             //FIXME: Problem: irgendwann ist der update vector 0, weil spent-vector sehr klein ist und daher
@@ -242,11 +246,14 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                 //wieviel bleibt pro Gut übrig:
                 cout << "available items: \n";
                 for (int j = 0; j < num_goods; ++j) {
+                    if (quantItem[j] < 0.01) {
+                        quantItem[j] = 0;
+                    }
                     cout << "Good " << j << " : " << quantItem[j] << "\n";
                     myfile << "Good " << j << " : " << quantItem[j] << "\n";
                 }
                 for (int i = 0; i < bidders.size(); ++i) {
-                    cout << "(Bidder " << i << " left with: " << bidders[i].budget << ")" << "\n";
+                    cout << "(Bidder " << i << " (spend: " << 100*(1-(bidders[i].budget/initBudget[i])) << " %)"  << "\n";
                 }
                 //for debugging
                 for (int j = 0; j < num_goods; ++j) {
@@ -328,7 +335,8 @@ vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidder
         //in jeder iteration werden die preise des guts i auf die menge der preise,
         // die jeder bidder ausgegeben hat, gesetzt
         for (int j = 0; j < num_goods; ++j) {
-            //initPrices[j] = 0;
+            //TODO: verändertert, dass alle Budgets ausgegeben werden (oder alle items aufgebraucht)
+            initPrices[j] = 0;
             for (int i = 0; i < bidders_PRD.size(); ++i)
                 initPrices[j] += bidders_PRD[i].spent[j];
 
@@ -454,6 +462,7 @@ int main() {
         //budget
         initBudget[k] = (random_number(low_Budget, up_Budget));
         bidders[k].budget = initBudget[k];
+        //= 1;
         //bidders[k].budget = budgetAgent;
 
         bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
@@ -484,11 +493,11 @@ int main() {
     //prices goods randomly initiated
     vector<double> initPrices(num_goods);
 
-    for (int k = 0; k < num_goods; ++k) {
+   /* for (int k = 0; k < num_goods; ++k) {
         //wichtig, dass hier ein spezifischer Bidder gewählt wird, da sonst Probleme bei num_goods > num_bidders und bidders[k].budget
         initPrices[k] = 1;
         //bidders[0].budget / num_goods;
-    }
+    }*/
 
     //price update vector
     vector<vector<double>> update(bidders.size(), vector<double>(num_goods));
@@ -556,19 +565,35 @@ int main() {
         ofstream myfile;
         myfile.open("data.txt", std::ios_base::app);
 
+        //für budget printout (debugging)
+        ofstream myfile2;
+        myfile2.open("budget_final.txt", std::ios_base::app);
+
+
 
         //current price computation
         vector<double> newPrices = currentPrice(num_bidders, num_goods, bidders, initPrices, spendingRestriction,
                                                 spendPerItem,
-                                                quantItem, SortedMbbVec, interGood, spendVec, update);
+                                                quantItem, SortedMbbVec, interGood, spendVec, update, initBudget);
 
 
         //preisanpassung übernehmen für nächsten loop
         initPrices = newPrices;
 
 
+        //falls alle Güter verkauft sind: FIXME: Market clearance
         if (accumulate(quantItem.begin(), quantItem.end(), 0.0) == 0.0) {
             cout << "Quantities are zero";
+            cout << "\n";
+            for (int i = 0; i < num_bidders; ++i) {
+                if (bidders[i].budget < 0.01) {
+                    bidders[i].budget = 0;
+                }
+                cout << "Budget bidder " << i << " is: " << bidders[i].budget << " (Budget zu " << (1-(bidders[i].budget/initBudget[i]))*100 << " % aufgebraucht!)";
+                cout << "\n";
+                myfile2 << "Budget bidder " << i << " is: " << bidders[i].budget << " (Budget zu " << (1-(bidders[i].budget/initBudget[i]))*100 << " % aufgebraucht!)";
+                myfile2<< "\n";
+            }
             exit(EXIT_FAILURE);
         }
 
@@ -641,8 +666,9 @@ int main() {
                 myfile << "\n";
                 cout << "Utility: " << utility << "\n";
                 myfile << "Utility: " << utility << "\n";
-                cout << "Budget was: " << initBudget[i] << " (left with: " << bidders[i].budget << ")" << "\n";
-                myfile << "Budget was: " << initBudget[i] << " (left with: " << bidders[i].budget << ")" << "\n";
+                cout << "Budget was: " << initBudget[i] << " (spend: " << 100*(1-(bidders[i].budget/initBudget[i])) << " %)" << "\n";
+                myfile2 << "Budget was: " << initBudget[i] << " (spend: " << 100*(1-(bidders[i].budget/initBudget[i])) << " %)" << "\n";
+                myfile << "Budget was: " << initBudget[i] << " (spend: " << 100*(1-(bidders[i].budget/initBudget[i])) << " %)"  << "\n";
                 cout << "\n";
                 myfile << "\n";
             }
@@ -650,6 +676,9 @@ int main() {
             //wieviel bleibt pro Gut übrig:
             cout << "available items: \n";
             for (int j = 0; j < num_goods; ++j) {
+                if (quantItem[j] < 0.01) {
+                    quantItem[j] = 0;
+                }
                 cout << "Good " << j << " : " << quantItem[j] << "\n";
                 myfile << "Good " << j << " : " << quantItem[j] << "\n";
             }
