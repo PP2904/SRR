@@ -3,4 +3,5 @@ project(SRR)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(SRR main.cpp PR_D.h)
+#3.1.21: mainPR_D.cpp hinzugefügt => Fehler: ld: 3 duplicate symbols for architecture x86_64
+add_executable(SRR main.cpp)

@@ -80,9 +80,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/PR_D.h">
-			<Option target="SRR"/>
-		</Unit>
 		<Unit filename="/Users/Peter/Documents/Uni/TUM/TUM_Info/Archive/WS19_20/BA/C_Lion/SRR/main.cpp">
 			<Option target="SRR"/>
 		</Unit>

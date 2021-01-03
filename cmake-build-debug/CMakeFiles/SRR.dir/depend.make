@@ -4,4 +4,6 @@
 CMakeFiles/SRR.dir/main.cpp.o: ../PR_D.h
 CMakeFiles/SRR.dir/main.cpp.o: ../main.cpp
 CMakeFiles/SRR.dir/main.cpp.o: ../mainPR_D.cpp
+CMakeFiles/SRR.dir/main.cpp.o: ../rand_rounding.cpp
+CMakeFiles/SRR.dir/main.cpp.o: ../rand_rounding.h
 

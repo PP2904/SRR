@@ -7,7 +7,6 @@
 #include <fstream>
 #include <chrono>
 #include <random>
-#include <list>
 #include <iomanip>
 #include <stdlib.h>
 #include <utility>
@@ -15,6 +14,8 @@
 #include <algorithm>
 #include "mainPR_D.cpp"
 #include "PR_D.h"
+#include "rand_rounding.cpp"
+#include "rand_rounding.h"
 
 
 using namespace std;
@@ -30,24 +31,27 @@ public:
 };
 */
 
-ostream &operator<<(ostream &os, const Bidder &b) {
+//schon in PR_D.h vorhanden
+/*ostream &operator<<(ostream &os, const Bidder &b) {
     for (int j = 0; j < b.spent.size(); ++j) {
         os << b.spent[j] << " ";
     }
     return os;
-}
+}*/
 
 //type def für: vector<vector<mytuple>> mbbVec
 typedef pair<double, int> myTuple;
 
-/*
 
+
+/*
 int random_number(int lb, int ub) {
     static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     static std::mt19937 engine(seed);
     return (engine() % (ub - lb + 1)) + lb;
 }
 */
+
 
 
 //return mbbVec; vector<vector<myTuple>> mbbVec(num_bidders, vector<myTuple>(num_goods));
@@ -246,7 +250,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                 //wieviel bleibt pro Gut übrig:
                 cout << "available items: \n";
                 for (int j = 0; j < num_goods; ++j) {
-                    if (quantItem[j] < 0.01) {
+                    if (quantItem[j] < 0.1) {
                         quantItem[j] = 0;
                     }
                     cout << "Good " << j << " : " << quantItem[j] << "\n";
@@ -505,6 +509,9 @@ int main() {
 
     vector<vector<double>> spendVec(num_bidders, vector<double>(num_goods));
 
+    //alloc vector
+    vector<vector<double>> allocVec(num_bidders, vector<double>(num_goods));
+
 
     //vector Aufbau bspw: bidder 1: (mbb, 0), (mbb,1), ...
     vector<vector<myTuple>> mbbVec(num_bidders, vector<myTuple>(num_goods));
@@ -545,7 +552,7 @@ int main() {
     if(spendingRestriction == 0){
 
         //hier möchte ich funktion aufrufen aus PR_D.cpp
-        PrDynamics_old(num_bidders, num_goods, bidders_PRD, initPrices,
+        PrDynamicsRestZero(num_bidders, num_goods, bidders_PRD, initPrices,
                        num_iterations);
 
         cout << "\n";
@@ -586,7 +593,8 @@ int main() {
             cout << "Quantities are zero";
             cout << "\n";
             for (int i = 0; i < num_bidders; ++i) {
-                if (bidders[i].budget < 0.01) {
+                //davor war < 0.01
+                if (bidders[i].budget < 0.1) {
                     bidders[i].budget = 0;
                 }
                 cout << "Budget bidder " << i << " is: " << bidders[i].budget << " (Budget zu " << (1-(bidders[i].budget/initBudget[i]))*100 << " % aufgebraucht!)";
@@ -598,7 +606,7 @@ int main() {
         }
 
         for (int i = 0; i < num_goods; ++i) {
-            if (quantItem[i] < 0.01) {
+            if (quantItem[i] < 0.1) {
                 quantItem[i] = 0;
             }
         }
@@ -627,7 +635,7 @@ int main() {
 
             cout << "\n";
             for (int i = 0; i < num_bidders; ++i) {
-                if (bidders[i].budget < 0.01) {
+                if (bidders[i].budget < 0.1) {
                     bidders[i].budget = 0;
                 }
             }
@@ -649,6 +657,9 @@ int main() {
             //print utility = valuation * menge (des guts) := bidders[i].valuation[j]*(spendVec[i][j]/newPrices[j])
             double utility = 0.0;
 
+            //vector der utility pro Bidder für rand_rounding
+            vector<double> utilityRound(num_bidders);
+
             //cout << "last, but not least";
 
             //print spending vector
@@ -659,9 +670,32 @@ int main() {
                     cout << spendVec[i][j] << " | ";
                     myfile << spendVec[i][j] << " | ";
                 }
+                cout << "\n";
+                myfile << "\n";
+                cout << "Bidder " << i << " allocation: " << "\n";
+                myfile << "Bidder " << i << " allocation: " << "\n";
+                for (int j = 0; j < num_goods; ++j) {
+                    //alloc of goods for each bidder
+                    allocVec[i][j] = spendVec[i][j] / newPrices[j];
+                    cout << allocVec[i][j]<< " | ";
+                    myfile << allocVec[i][j] << " | ";
+
+                    //alloc of goods 0 setzen, bevor nächster bidder drankommt
+                    if(j == (num_goods-1)){
+                        allocVec[i][j] = 0;
+                    }
+                }
                 for (int j = 0; j < num_goods; ++j) {
                     utility += bidders[i].valuation[j] * (spendVec[i][j] / newPrices[j]);
+                    //TODO: Bad Access (Code 11 exit)
+                    if(j == (num_goods-1)){
+                        utilityRound[i] = utility;
+                    }
                 }
+
+                //TODO: Bad Access (Code 11 exit)
+               //utilityRound[i] = utility;
+
                 cout << "\n";
                 myfile << "\n";
                 cout << "Utility: " << utility << "\n";
@@ -676,22 +710,22 @@ int main() {
             //wieviel bleibt pro Gut übrig:
             cout << "available items: \n";
             for (int j = 0; j < num_goods; ++j) {
-                if (quantItem[j] < 0.01) {
+                if (quantItem[j] < 0.1) {
                     quantItem[j] = 0;
                 }
                 cout << "Good " << j << " : " << quantItem[j] << "\n";
                 myfile << "Good " << j << " : " << quantItem[j] << "\n";
             }
 
-           myfile << "\n";
+            myfile << "\n";
+            cout << "\n";
+
+            cout << "rounded Allocations: \n";
+
+          roundingSRE(num_bidders,num_goods, allocVec, quant, bidders, utilityRound);
 
 
-            /*  //for debuggin: testing if spendPerItem is met
-             for (int j = 0; j < num_goods; ++j) {
-                 cout << spendPerItem[j];
-                 cout << "\n";
-             }
- */
+
 
         }
 
