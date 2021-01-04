@@ -39,11 +39,11 @@ using namespace std;
 
 
 //Main method
-vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector<double>> allocVec,
+vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector<double>> &allocVec,
         int quant, vector<Bidder> bidders, vector<double> MaxUtility, double spendingRestriction,int num_iterations) {
 
 
-    //FIXME: allocVec für bidder ist 0, gleichzeitig ist aber MaxUtility des selben bidders 107 (!!!)
+    //Attention: allocVec für bidder ist 0, gleichzeitig ist aber MaxUtility des selben bidders 107 (!!!)
 
     int pre = 3;
 
@@ -69,24 +69,24 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
     //partial sums pro Gut (über alle Bidder)
     vector<double> partial_sums(num_bidders, 0.0);
 
-    //FIXME: fehler muss hier sein
+    //Attention: fehler muss hier sein
 
     //die fraktionalen allokationen aus allocVec[i][j] werden auf fractional_allocations[i][j] addiert
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            fractional_allocations[i][j] = ((quant * (allocVec[i][j])) - (floor(quant * (allocVec[i][j]))));
+            fractional_allocations[i][j] = (((allocVec[i][j])) - (floor((allocVec[i][j]))));
             if (fractional_allocations[i][j] < 0.01 || fractional_allocations[i][j] > 0.99) {
                 fractional_allocations[i][j] = 0;
             }
             //fractional_allocation[i][j]+integral_allocation[i][j] = allocVec[i][j]
-            integral_allocations[i][j] = round(quant * allocVec[i][j] - fractional_allocations[i][j]);
+            integral_allocations[i][j] = round(allocVec[i][j] - fractional_allocations[i][j]);
             final_allocations[i][j] = integral_allocations[i][j];
             //cout << "Bidder " << i << " has " << fractional_allocations[i][j] << " of good " << j << "\n";
         }
     }
 
-    //TODO: final_allocations (rand rounding allocs) werden falsch berechnet (3.1.21) => diese sind nicht gerundet
-    //FIXME: sum_frac kann > 1 sein !
+    //Attention: final_allocations (rand rounding allocs) werden falsch berechnet (3.1.21) => diese sind nicht gerundet
+    //Attention: sum_frac kann > 1 sein !
 
 // pro bidder berechne ich die summe der fraktionalen Teile pro (jeweils ein) gut j; wird für partial sums benötigt;
 //sum_frac ist damit die summe der fraktionalen Teile (über alle Bidder) eines guts j
@@ -140,10 +140,10 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
     cout << "Original allocations:" << endl;
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            if ((quant * allocVec[i][j]) < 0.01) {
+            if ((allocVec[i][j]) < 0.01) {
                 allocVec[i][j] = 0;
             }
-            cout << quant * allocVec[i][j] << " ";
+            cout << allocVec[i][j] << " ";
         }
         cout << "|";
     }
@@ -170,7 +170,16 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
     cout << "Randomized rounding allocations: " << endl;
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            cout << floor(final_allocations[i][j]) << " ";
+           //cout << floor(final_allocations[i][j]) << " ";
+
+           //round half up
+           if(fractional_allocations[i][j] > 0.4){
+               cout << ceil(final_allocations[i][j]) << " ";
+           }
+           else{
+               cout << floor(final_allocations[i][j]) << " ";
+           }
+
         }
         cout << "|";
     }
@@ -190,12 +199,11 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
     double rd_util = 0.0;
     vector<double> rd_utility(num_bidders);
 
-    double int_gap = 0.0;
 
 
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            rd_util = rd_util + (((final_allocations[i][j]) / quant) * bidders[i].valuation[j]);
+            rd_util = rd_util + (((fractional_allocations[i][j])) * bidders[i].valuation[j]);
         }
         //utility for rounded alloc
         rd_utility[i] = rd_util;
@@ -205,7 +213,6 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
 
         //max utility
         cout << std::setprecision(pre) << MaxUtility[i] << " | " << "\n";
-        //myfile << std::setprecision(pre)  << utilityRound[i] << " | ";
         myfile2 << std::setprecision(pre) << MaxUtility[i] << "\n";
         
 
