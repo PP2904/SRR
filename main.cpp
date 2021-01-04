@@ -71,7 +71,8 @@ vector<vector<myTuple>> mbbGraph(int num_bidders, int num_goods, vector<Bidder> 
             //FIXME: macht die if-Abfrage Sinn?
             //if(mbbVec[i][j].first > 0) {
 
-            mbb = bidders[i].valuation[j] / newPrices[j];
+            //valuations sind ints
+            mbb = double(bidders[i].valuation[j]) / newPrices[j];
             if (mbb < 0.001) mbb = 0;
 
             //Paar-Reihenfolge ist verkehrt zum Print-out
@@ -99,7 +100,7 @@ vector<vector<myTuple>> mbbGraph(int num_bidders, int num_goods, vector<Bidder> 
 vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> &newPrices,
                                      double spendingRestriction, vector<double> &spendPerItem,
                                      vector<double> &quantItem,
-                                     vector<vector<myTuple>> &SortedMbbVec, vector<vector<double>> spendVec) {
+                                     vector<vector<myTuple>> &SortedMbbVec, vector<vector<double>> spendVec, vector<vector<double>> &allocVec) {
 
 
     //spendVec = spending vector  for spending graph Q(x);
@@ -125,6 +126,7 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
 
 
 
+            //TODO: das stimmt doch nicht !?
             //new share of good
             double newShare = double(double(bidders[iter].budget / num_goods) / newPrices[p.second]);
 
@@ -134,16 +136,19 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
 
 
             if ((double(spendPerItem[p.second] + (newShare * newPrices[p.second])) <= spendingRestriction) &&
-                quantItem[p.second] - newShare >= 0.0 && bidders[iter].budget != 0.0) {
+                quantItem[p.second] - newShare >= 0.0 && bidders[iter].budget != 0.0 &&
+                    (allocVec[iter][p.second] + double(spendVec[iter][p.second] / newPrices[p.second])) < quantItem[p.second] ) {
 
 
                 //spendVec wird erhöht durch neues share des Guts * price des guts
                 spendVec[iter][p.second] += newShare * newPrices[p.second];
 
+                allocVec[iter][p.second] += double(spendVec[iter][p.second] / newPrices[p.second]);
+
 
                 //item wurde vekauft und muss daher dezimiert werden
                 quantItem[p.second] -= newShare;
-                if (quantItem[p.second] < 0.001) quantItem[p.second] = 0.0;
+                if (quantItem[p.second] < 0.1) quantItem[p.second] = 0.0;
 
                 //bisher für gut ausgegeben (overall agents)
                 spendPerItem[p.second] += newShare * newPrices[p.second];
@@ -191,13 +196,18 @@ vector<int> interestsGood(int num_bidders, int num_goods, vector<vector<myTuple>
 vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> initPrices,
                             double spendingRestriction, vector<double> &spendPerItem, vector<double> &quantItem,
                             vector<vector<myTuple>> &SortedMbbVec,
-                            vector<int> &interGood, vector<vector<double>> &spendVec, vector<vector<double>> &update,  vector<double> initBudget) {
+                            vector<int> &interGood,
+                            vector<vector<double>> &spendVec, vector<vector<double>> &update,
+                            vector<double> initBudget, vector<vector<double>> &allocVec, int quant, int num_iterations) {
 
     ofstream myfile;
     myfile.open("data.txt", std::ios_base::app);
 
     //passen Preise schrittweise an
     vector<double> newPrices(num_goods);
+
+    vector<double> MaxUtility(num_bidders);
+    double utility = 0.0;
 
 
     newPrices = initPrices;
@@ -216,16 +226,6 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
     }
 
 
-    /* //idea: if interGood > bidders/2 => preise erhöhen
-     //idea: if interGood <= bidders/2 => preise erniedrigen
-     if(interGood[k] > (num_bidders/2)){
-         newPrices[k] += bidders[i].spent[k];
-     }
-     else{
-         newPrices[k] -= 100*(bidders[i].spent[k]);
-     }*/
-
-
 
     //Problem ist, dass spent bereits im 2. Durchlauf = 0 ist. <- wird nicht upgedatet => update = 0 und dann teilen wir im
     //3. for loop hier durch update = 0 ...
@@ -234,17 +234,19 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
     for (int i = 0; i < bidders.size(); ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            update[i][j] = (bidders[i].valuation[j] * bidders[i].spent[j]) / newPrices[j];
+            update[i][j] = double(bidders[i].valuation[j] * bidders[i].spent[j]) / newPrices[j];
 
         }
     }
 
 
-    //TODO: hier wird eingestiegen, wenn update vector 0 (fast 0) ist (!)
+
     for (int i = 0; i < bidders.size(); ++i) {
         for (int j = 0; j < num_goods; ++j) {
             //FIXME: Problem: irgendwann ist der update vector 0, weil spent-vector sehr klein ist und daher
             // nur noch wenig hinzukommt;
+
+            //TODO: hier wird eingestiegen, wenn update vector 0 (fast 0) ist (!)
             if(accumulate(update[i].begin(), update[i].end(), 0.0) <= 0.001){
                 cout << endl;
                 //wieviel bleibt pro Gut übrig:
@@ -258,6 +260,15 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                 }
                 for (int i = 0; i < bidders.size(); ++i) {
                     cout << "(Bidder " << i << " (spend: " << 100*(1-(bidders[i].budget/initBudget[i])) << " %)"  << "\n";
+
+                        for (int j = 0; j < num_goods; ++j) {
+                            utility += bidders[i].valuation[j] *  allocVec[i][j];
+                            if(j == (num_goods-1)){
+                                MaxUtility[i] = utility;
+                            }
+                        }
+
+
                 }
                 //for debugging
                 for (int j = 0; j < num_goods; ++j) {
@@ -265,6 +276,11 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                     cout << "Für Good " << j << " wurden " <<  spendPerItem[j] << " Geldeinheiten ausgegeben" << "\n";
                  }
                 printf("update vector is zero");
+
+                //print to file "myfile" findet in rand_rounding.cpp statt
+                //Spending Restricted Equilibrium (SRE)
+                roundingSRE(num_bidders,num_goods, allocVec, quant, bidders, MaxUtility,spendingRestriction,num_iterations);
+
                 exit(EXIT_FAILURE);
             }
             bidders[i].spent[j] = ( bidders[i].budget * update[i][j] )  / accumulate(update[i].begin(), update[i].end(), 0.0);
@@ -275,16 +291,20 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
 
 
+
+
+
+
 /* FUNKTIONSAUFRUFE */
 
     SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, newPrices, SortedMbbVec);
 
     interGood = interestsGood(num_bidders, num_goods, SortedMbbVec);
 
-    //TODO update spendVec bei jedem Loop
+
     spendVec = spendingGraph(num_bidders, num_goods, bidders, newPrices, spendingRestriction, spendPerItem, quantItem,
                              SortedMbbVec,
-                             spendVec);
+                             spendVec, allocVec);
 
 
     //for debugging
@@ -339,7 +359,7 @@ vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidder
         //in jeder iteration werden die preise des guts i auf die menge der preise,
         // die jeder bidder ausgegeben hat, gesetzt
         for (int j = 0; j < num_goods; ++j) {
-            //TODO: verändertert, dass alle Budgets ausgegeben werden (oder alle items aufgebraucht)
+            //TODO: verändert, dass alle Budgets ausgegeben werden (oder alle items aufgebraucht)
             initPrices[j] = 0;
             for (int i = 0; i < bidders_PRD.size(); ++i)
                 initPrices[j] += bidders_PRD[i].spent[j];
@@ -372,20 +392,6 @@ vector<double> PrDynamics(int num_bidders, int num_goods, vector<Bidder> &bidder
             }
 
         }
-
-
-
-      /*//TODO: sind das korrekte Werte?
-        if (it == (num_iterations - 1)) {
-            for (int b = 0; b < num_bidders; ++b) {
-                for (int i = 0; i < num_goods; ++i) {
-                    utility[b] += double(bidders_PRD[b].valuation[i] * (bidders_PRD[b].spent[i] / initPrices[i]));
-                }
-                cout << "Utility (PR-D) für Bidder " << b << " ist: " << utility[b] << "\n";
-                cout << "\n";
-            }
-
-        }*/
 
 
     }
@@ -572,36 +578,103 @@ int main() {
         ofstream myfile;
         myfile.open("data.txt", std::ios_base::app);
 
-        //für budget printout (debugging)
+        //für budget printout (debugging) FALLS quantities nicht 0 (!)
         ofstream myfile2;
-        myfile2.open("budget_final.txt", std::ios_base::app);
+        myfile2.open("resultNotZeroQuant.txt", std::ios_base::app);
+
+        //für budget printout (debugging)
+        ofstream myfileZEROQuant;
+        myfileZEROQuant.open("resultsZeroQuant.txt", std::ios_base::app);
 
 
 
         //current price computation
         vector<double> newPrices = currentPrice(num_bidders, num_goods, bidders, initPrices, spendingRestriction,
                                                 spendPerItem,
-                                                quantItem, SortedMbbVec, interGood, spendVec, update, initBudget);
+                                                quantItem, SortedMbbVec, interGood, spendVec, update, initBudget, allocVec, quant, num_iterations);
 
 
         //preisanpassung übernehmen für nächsten loop
         initPrices = newPrices;
 
 
-        //falls alle Güter verkauft sind: FIXME: Market clearance
+        /*
+         *
+         * QUANTITIES are ZERO
+         *
+         * */
+
+
+        //falls alle Güter verkauft sind: Market clearance
         if (accumulate(quantItem.begin(), quantItem.end(), 0.0) == 0.0) {
-            cout << "Quantities are zero";
+
+
+            vector<double> utilityRound(num_bidders);
+            double utilityQuantZero = 0.0;
+
+
+            myfileZEROQuant << "Quantities are zero";
             cout << "\n";
+            myfileZEROQuant << "\n";
+
+
             for (int i = 0; i < num_bidders; ++i) {
                 //davor war < 0.01
                 if (bidders[i].budget < 0.1) {
                     bidders[i].budget = 0;
                 }
-                cout << "Budget bidder " << i << " is: " << bidders[i].budget << " (Budget zu " << (1-(bidders[i].budget/initBudget[i]))*100 << " % aufgebraucht!)";
+                cout << "Budget bidder " << i << " is: " << bidders[i].budget << " (Budget zu "
+                     << (1 - (bidders[i].budget / initBudget[i])) * 100 << " % aufgebraucht!)";
                 cout << "\n";
-                myfile2 << "Budget bidder " << i << " is: " << bidders[i].budget << " (Budget zu " << (1-(bidders[i].budget/initBudget[i]))*100 << " % aufgebraucht!)";
-                myfile2<< "\n";
+                myfileZEROQuant << "Budget bidder " << i << " is: " << bidders[i].budget << " (Budget zu "
+                        << (1 - (bidders[i].budget / initBudget[i])) * 100 << " % aufgebraucht!)";
+                myfileZEROQuant << "\n";
+                cout << "Bidder " << i << " spends: \n";
+                for (int j = 0; j < num_goods; ++j) {
+                    cout << spendVec[i][j] << " | ";
+                }
+                cout << "\n";
+                cout << "Bidder " << i << " allocation: \n";
+                for (int j = 0; j < num_goods; ++j) {
+
+                    //TODO: problem ist hier, da allocVec auch > quant eines Guts sein kann
+                    //alloc of goods for each bidder (findet in spendingGraph statt)
+                    //allocVec[i][j] = double(spendVec[i][j] / newPrices[j]);
+
+                    cout << allocVec[i][j] << " | ";
+                    myfileZEROQuant << allocVec[i][j] << " | ";
+                }
+
+
+
+           /* }
+
+
+            for (int i = 0; i < num_bidders; ++i) {*/
+                for (int j = 0; j < num_goods; ++j) {
+                   //utilityQuantZero += bidders[i].valuation[j] * (spendVec[i][j] / newPrices[j]);
+                   utilityQuantZero += bidders[i].valuation[j] * allocVec[i][j];
+                    if(j == (num_goods-1)){
+                        utilityRound[i] = utilityQuantZero;
+                    }
+                }
+
+                cout << "\n";
+                myfile << "\n";
+                cout << "Utility: " << utilityQuantZero << "\n";
+                myfile << "Utility: " << utilityQuantZero << "\n";
+                myfileZEROQuant << "Utility: " << utilityQuantZero << "\n";
+                cout << "Budget was: " << initBudget[i] << " (spend: " << 100*(1-(bidders[i].budget/initBudget[i])) << " %)" << "\n";
+                myfileZEROQuant << "Budget was: " << initBudget[i] << " (spend: " << 100*(1-(bidders[i].budget/initBudget[i])) << " %)" << "\n";
+                myfile << "Budget was: " << initBudget[i] << " (spend: " << 100*(1-(bidders[i].budget/initBudget[i])) << " %)"  << "\n";
+                cout << "\n";
+                myfile << "\n";
+                myfileZEROQuant << "\n";
+
             }
+            roundingSRE(num_bidders,num_goods, allocVec, quant, bidders, utilityRound,spendingRestriction,num_iterations);
+
+            cout << "Quantities are zero";
             exit(EXIT_FAILURE);
         }
 
@@ -617,10 +690,17 @@ int main() {
         cout << "Iteration " << it << ":\n";
         for (int i = 0; i < num_goods; ++i) {
             cout << "Good " << i << " costs: " << newPrices[i] << "\n";
-            //cout << "Good " << i << ": " << quantItem[i] << "\n";
+            cout << "Good " << i << ": " << quantItem[i] << "\n";
         }
         cout << endl;
 
+
+
+        /*
+        *
+        * QUANTITIES are NOT ZERO
+        *
+        * */
 
 
         //for debugging
@@ -658,7 +738,8 @@ int main() {
             double utility = 0.0;
 
             //vector der utility pro Bidder für rand_rounding
-            vector<double> utilityRound(num_bidders);
+            // nicht das gleiche wie max_utility
+            vector<double> MaxUtility(num_bidders);
 
             //cout << "last, but not least";
 
@@ -675,26 +756,29 @@ int main() {
                 cout << "Bidder " << i << " allocation: " << "\n";
                 myfile << "Bidder " << i << " allocation: " << "\n";
                 for (int j = 0; j < num_goods; ++j) {
-                    //alloc of goods for each bidder
-                    allocVec[i][j] = spendVec[i][j] / newPrices[j];
-                    cout << allocVec[i][j]<< " | ";
+
+
+                    //alloc of goods for each bidder (findet in spendingGraph statt)
+                    //TODO: problem ist hier, da allocVec auch > quant eines Guts sein kann
+                    //allocVec[i][j] = double(spendVec[i][j] / newPrices[j]);
+
+                    cout << allocVec[i][j] << " | ";
                     myfile << allocVec[i][j] << " | ";
 
-                    //alloc of goods 0 setzen, bevor nächster bidder drankommt
-                    if(j == (num_goods-1)){
-                        allocVec[i][j] = 0;
-                    }
                 }
+           /* }
+
+
+            for (int i = 0; i < num_bidders; ++i) {*/
                 for (int j = 0; j < num_goods; ++j) {
-                    utility += bidders[i].valuation[j] * (spendVec[i][j] / newPrices[j]);
-                    //TODO: Bad Access (Code 11 exit)
+                    //utility += bidders[i].valuation[j] * (spendVec[i][j] / newPrices[j]);
+                    utility += bidders[i].valuation[j] *  allocVec[i][j];
                     if(j == (num_goods-1)){
-                        utilityRound[i] = utility;
+                        MaxUtility[i] = utility;
                     }
                 }
 
-                //TODO: Bad Access (Code 11 exit)
-               //utilityRound[i] = utility;
+
 
                 cout << "\n";
                 myfile << "\n";
@@ -720,9 +804,15 @@ int main() {
             myfile << "\n";
             cout << "\n";
 
-            cout << "rounded Allocations: \n";
+            //for debugging
+            cout << "jetzt kommt roundingSRE function \n";
 
-          roundingSRE(num_bidders,num_goods, allocVec, quant, bidders, utilityRound);
+
+            //MaxUtility ist die utility pro bidder (in rand iterative rounding ist das max_utility
+
+            //print to file "myfile" findet in rand_rounding.cpp statt
+            //Spending Restricted Equilibrium (SRE)
+          roundingSRE(num_bidders,num_goods, allocVec, quant, bidders, MaxUtility,spendingRestriction,num_iterations);
 
 
 

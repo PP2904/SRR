@@ -28,25 +28,31 @@
 using namespace std;
 
 
-/*
-int random_number(int lb, int ub) {
+
+/*int random_number(int lb, int ub) {
     static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     static std::mt19937 engine(seed);
     return (engine() % (ub - lb + 1)) + lb;
-}
+}*/
 
-*/
+
 
 
 //Main method
 vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector<double>> allocVec,
-        int quant, vector<Bidder> bidders, vector<double> utilityRound ) {
+        int quant, vector<Bidder> bidders, vector<double> MaxUtility, double spendingRestriction,int num_iterations) {
+
+
+    //FIXME: allocVec für bidder ist 0, gleichzeitig ist aber MaxUtility des selben bidders 107 (!!!)
 
     int pre = 3;
 
     //für budget printout (debugging)
     ofstream myfile2;
     myfile2.open("roundedResult.txt", std::ios_base::app);
+
+    myfile2 << "Bidders: " << num_bidders << " Goods: " << num_goods << " Iterations: " << num_iterations
+            << " spending restriction: " << spendingRestriction << " quantity per item: " << quant << "\n";
 
 
     //fraktionale allokation von Bieter i und gut j
@@ -63,6 +69,7 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
     //partial sums pro Gut (über alle Bidder)
     vector<double> partial_sums(num_bidders, 0.0);
 
+    //FIXME: fehler muss hier sein
 
     //die fraktionalen allokationen aus allocVec[i][j] werden auf fractional_allocations[i][j] addiert
     for (int i = 0; i < num_bidders; ++i) {
@@ -77,6 +84,9 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
             //cout << "Bidder " << i << " has " << fractional_allocations[i][j] << " of good " << j << "\n";
         }
     }
+
+    //TODO: final_allocations (rand rounding allocs) werden falsch berechnet (3.1.21) => diese sind nicht gerundet
+    //FIXME: sum_frac kann > 1 sein !
 
 // pro bidder berechne ich die summe der fraktionalen Teile pro (jeweils ein) gut j; wird für partial sums benötigt;
 //sum_frac ist damit die summe der fraktionalen Teile (über alle Bidder) eines guts j
@@ -110,7 +120,10 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
         //zufallszahl zw. 0 und 1 (double)
         //srand(time(NULL)); funktioniert nicht so gut
 
+        //double rdm_number = (random_number(0, 5))/6;
+
         double rdm_number = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
 
         for (int i = 0; i < num_bidders; ++i) {
             //wenn zufallszahl <= partial_sums[i] => bieter i bekommt das fraktionale gut zugewiesen und break;
@@ -120,6 +133,9 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
             }
         }
     }
+
+    //debugging purpose
+    //cout << "quantity per item is: " << quant << "\n";
 
     cout << "Original allocations:" << endl;
     for (int i = 0; i < num_bidders; ++i) {
@@ -154,7 +170,7 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
     cout << "Randomized rounding allocations: " << endl;
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            cout << final_allocations[i][j] << " ";
+            cout << floor(final_allocations[i][j]) << " ";
         }
         cout << "|";
     }
@@ -166,45 +182,32 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
 
     //utilityRound der gerundeten Alloks berechnen
     cout << "\n";
-    cout << "utilityRound for rounded alloc | utilityRound: | integrality gap: \n";
-    //myfile << "utilityRound for rounded alloc | utilityRound: | integrality gap: \n";
-    //myfile2 << ", \n";
+    cout << "utility for rounded alloc | utility: \n";
+    myfile2 << "utility for rounded alloc | utility: \n";
+
 
 
     double rd_util = 0.0;
-    vector<double> rd_utilityRound(num_bidders);
+    vector<double> rd_utility(num_bidders);
 
     double int_gap = 0.0;
-    double print_int_gap = 0.0;
-    double avg_int_gap = 0.0;
 
 
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
             rd_util = rd_util + (((final_allocations[i][j]) / quant) * bidders[i].valuation[j]);
         }
-        //utilityRound for rounded alloc
-        rd_utilityRound[i] = rd_util;
+        //utility for rounded alloc
+        rd_utility[i] = rd_util;
         cout << rd_util << " | ";
         //myfile << rd_util << " | ";
         myfile2 << rd_util << " | ";
 
-        //utilityRound:
-        cout << std::setprecision(pre) << utilityRound[i] << " | ";
+        //max utility
+        cout << std::setprecision(pre) << MaxUtility[i] << " | " << "\n";
         //myfile << std::setprecision(pre)  << utilityRound[i] << " | ";
-        myfile2 << std::setprecision(pre) << utilityRound[i] << "\n";
-
-        //integrality gap:
-        if (rd_utilityRound[i] <= utilityRound[i]) {
-            cout << std::setprecision(pre) << rd_utilityRound[i] / utilityRound[i] << "\n";
-            // myfile << std::setprecision(pre)  << rd_utilityRound[i]/utilityRound[i] << "\n";
-            int_gap = int_gap + (rd_utilityRound[i] / utilityRound[i]);
-        }
-            //integer sol > optimal sol
-        else {
-            cout << " \n";
-        }
-
+        myfile2 << std::setprecision(pre) << MaxUtility[i] << "\n";
+        
 
 
     }
