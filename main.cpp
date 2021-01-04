@@ -824,8 +824,6 @@ int main() {
                 myfile << "\n";
                 cout << "\n";
 
-                //for debugging
-                cout << "jetzt kommt roundingSRE function \n";
 
 
                 //MaxUtility ist die utility pro bidder (in rand iterative rounding ist das max_utility

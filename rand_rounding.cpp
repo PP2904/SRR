@@ -203,19 +203,16 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
 
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-            rd_util = rd_util + (((fractional_allocations[i][j])) * bidders[i].valuation[j]);
+            rd_util += (((fractional_allocations[i][j])) * bidders[i].valuation[j]);
         }
         //utility for rounded alloc
         rd_utility[i] = rd_util;
-        cout << rd_util << " | ";
-        //myfile << rd_util << " | ";
-        myfile2 << rd_util << " | ";
+        cout << rd_utility[i] << " | ";
+        myfile2 << rd_utility[i] << " | ";
 
         //max utility
         cout << std::setprecision(pre) << MaxUtility[i] << " | " << "\n";
         myfile2 << std::setprecision(pre) << MaxUtility[i] << "\n";
-        
-
 
     }
     return final_allocations;
