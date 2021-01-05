@@ -259,8 +259,13 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
     for (int i = 0; i < bidders.size(); ++i) {
         for (int j = 0; j < num_goods; ++j) {
+
+            ofstream rdResult;
+            rdResult.open("roundedResult.txt", std::ios_base::app);
+
             //Attention: Problem: irgendwann ist der update vector 0, weil spent-vector sehr klein ist und daher
             // nur noch wenig hinzukommt;
+
 
             //Attention: hier wird eingestiegen, wenn update vector 0 (fast 0) ist (!)
             if(accumulate(update[i].begin(), update[i].end(), 0.0) <= 0.001){
@@ -276,7 +281,9 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                 }
                 for (int i = 0; i < bidders.size(); ++i) {
                     cout << "(Bidder " << i << " (spend: " << 100*(1-(bidders[i].budget/initBudget[i])) << " %)"  << "\n";
-
+                    //rdResult << "Bidder " << i << " Budget was: " << initBudget[i] << " (spend: "
+                           //  << 100 * (1 - (bidders[i].budget / initBudget[i])) << " %)" << "\n";
+                    rdResult << initBudget[i] << " | " << 100 * (1 - (bidders[i].budget / initBudget[i])) << "\n";
                         for (int j = 0; j < num_goods; ++j) {
                             utility += bidders[i].valuation[j] *  allocVec[i][j];
                             if(j == (num_goods-1)){
@@ -286,11 +293,15 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
 
                 }
+
+                rdResult << "\n";
+
                 //for debugging
                 for (int j = 0; j < num_goods; ++j) {
                     cout << "\n";
                     cout << "Für Good " << j << " wurden " <<  spendPerItem[j] << " Geldeinheiten ausgegeben" << "\n";
                  }
+                cout << "\n";
                 printf("update vector is zero");
                 cout << "\n";
 
@@ -599,6 +610,9 @@ int main() {
             ofstream myfileZEROQuant;
             myfileZEROQuant.open("resultsZeroQuant.txt", std::ios_base::app);
 
+            ofstream rdResult;
+            rdResult.open("roundedResult.txt", std::ios_base::app);
+
 
 
             //current price computation
@@ -684,11 +698,20 @@ int main() {
                                     << 100 * (1 - (bidders[i].budget / initBudget[i])) << " %)" << "\n";
                     myfile << "Budget was: " << initBudget[i] << " (spend: "
                            << 100 * (1 - (bidders[i].budget / initBudget[i])) << " %)" << "\n";
+                    /*rdResult << "Bidder " << i << " Budget was: " << initBudget[i] << " (spend: "
+                             << 100 * (1 - (bidders[i].budget / initBudget[i])) << " %)" << "\n";*/
+
+                    rdResult << initBudget[i] << " | " << 100 * (1 - (bidders[i].budget / initBudget[i])) << "\n";
+
+
                     cout << "\n";
                     myfile << "\n";
                     myfileZEROQuant << "\n";
 
                 }
+                rdResult << "\n";
+
+
                 roundingSRE(num_bidders, num_goods, allocVec, quant, bidders, utilityRound, spendingRestriction,
                             num_iterations);
 
@@ -807,9 +830,17 @@ int main() {
                             << 100 * (1 - (bidders[i].budget / initBudget[i])) << " %)" << "\n";
                     myfile << "Budget was: " << initBudget[i] << " (spend: "
                            << 100 * (1 - (bidders[i].budget / initBudget[i])) << " %)" << "\n";
+                    /*rdResult << "Bidder " << i << " Budget was: " << initBudget[i] << " (spend: "
+                             << 100 * (1 - (bidders[i].budget / initBudget[i])) << " %)" << "\n";*/
+
+                    rdResult << initBudget[i] << " | " << 100 * (1 - (bidders[i].budget / initBudget[i])) << "\n";
+
+
                     cout << "\n";
                     myfile << "\n";
                 }
+
+                rdResult << "\n";
 
                 //wieviel bleibt pro Gut übrig:
                 cout << "available items: \n";

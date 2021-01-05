@@ -39,3 +39,321 @@ utility for rounded alloc | utility:
 19 | 40
 35.1 | 62.1
 37.8 | 73.8
+Bidders: 4 Goods: 10 Iterations: 3000 spending restriction: 35 quantity per item: 2
+utility for rounded alloc | utility: 
+9.38269 | 9.38
+22.4 | 23.4
+38 | 42
+42.3 | 57.3
+Bidders: 4 Goods: 6 Iterations: 3000 spending restriction: 3 quantity per item: 2
+utility for rounded alloc | utility: 
+5.32317 | 5.32
+12.6 | 12.6
+19.5 | 19.5
+23.8 | 23.8
+Bidders: 19 Goods: 34 Iterations: 3000 spending restriction: 25 quantity per item: 6
+utility for rounded alloc | utility: 
+27.537 | 80.5
+37.1 | 101
+66.9 | 152
+92.1 | 247
+107 | 295
+116 | 315
+123 | 387
+142 | 426
+158 | 474
+175 | 562
+183 | 609
+203 | 695
+233 | 791
+254 | 856
+273 | 897
+283 | 907
+313 | 977
+324 | 1.01e+03
+338 | 1.04e+03
+Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 4 quantity per item: 2
+utility for rounded alloc | utility: 
+1.67538 | 10.7
+15.5 | 24.5
+22.8 | 41.8
+32 | 51
+38.7 | 57.7
+Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 6 quantity per item: 2
+utility for rounded alloc | utility: 
+13.1684 | 24.2
+15.5 | 26.5
+25.5 | 36.5
+36.7 | 47.7
+55 | 66
+Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 6 quantity per item: 2
+utility for rounded alloc | utility: 
+2.81472 | 2.81
+13.4 | 24.4
+25.8 | 47.8
+37.7 | 59.7
+46 | 78
+Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 6 quantity per item: 2
+utility for rounded alloc | utility: 
+15.219 | 15.2
+22.6 | 22.6
+30.1 | 37.1
+36.4 | 43.4
+43.7 | 61.7
+Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 6 quantity per item: 2
+utility for rounded alloc | utility: 
+8.91924 | 8.92
+12.5 | 12.5
+16.6 | 23.6
+22.9 | 37.9
+44.6 | 59.6
+Bidders: 5 Goods: 7 Iterations: 3000 spending restriction: 6 quantity per item: 2
+utility for rounded alloc | utility: 
+1.39028 | 10.4
+5.02 | 24.1
+13.5 | 32.5
+23.3 | 42.4
+37.8 | 56.9
+
+Bidders: 5 Goods: 7 Iterations: 3000 spending restriction: 10 quantity per item: 2
+utility for rounded alloc | utility: 
+10.4208 | 10.4
+23.7 | 23.7
+25.6 | 35.6
+37.7 | 47.7
+44.2 | 54.2
+Bidder 0 Budget was: 10 (spend: 70.8643 %)
+Bidder 1 Budget was: 6 (spend: 75.0265 %)
+Bidder 2 Budget was: 6 (spend: 70.8643 %)
+Bidder 3 Budget was: 10 (spend: 66.0083 %)
+Bidder 4 Budget was: 3 (spend: 81.6521 %)
+
+Bidders: 5 Goods: 7 Iterations: 3000 spending restriction: 10 quantity per item: 2
+utility for rounded alloc | utility: 
+6.32966 | 6.33
+12 | 12
+16.5 | 26.5
+27.3 | 37.4
+36.2 | 56.3
+Bidder 0 Budget was: 2 (spend: 66.0083 %)
+Bidder 1 Budget was: 3 (spend: 60.3431 %)
+Bidder 2 Budget was: 6 (spend: 60.3431 %)
+Bidder 3 Budget was: 5 (spend: 53.7336 %)
+Bidder 4 Budget was: 10 (spend: 53.7336 %)
+
+
+Bidders: 5 Goods: 7 Iterations: 3000 spending restriction: 15 quantity per item: 2
+utility for rounded alloc | utility: 
+3.24813 | 14.2
+12.5 | 23.5
+24.9 | 35.9
+27.3 | 49.3
+44.5 | 66.5
+Bidder 0 Budget was: 6 (spend: 70.8643 %)
+Bidder 1 Budget was: 4 (spend: 75.0265 %)
+Bidder 2 Budget was: 6 (spend: 70.8643 %)
+Bidder 3 Budget was: 6 (spend: 66.0083 %)
+Bidder 4 Budget was: 9 (spend: 66.0083 %)
+
+Bidders: 5 Goods: 7 Iterations: 3000 spending restriction: 15 quantity per item: 2
+utility for rounded alloc | utility: 
+15.7596 | 17.8
+21.3 | 33.3
+24.7 | 36.7
+31.9 | 43.9
+50.2 | 62.2
+Bidder 0 Budget was: 7 (spend: 70.8643 %)
+Bidder 1 Budget was: 6 (spend: 70.8643 %)
+Bidder 2 Budget was: 1 (spend: 78.5942 %)
+Bidder 3 Budget was: 2 (spend: 75.0265 %)
+Bidder 4 Budget was: 7 (spend: 70.8643 %)
+
+Bidders: 5 Goods: 7 Iterations: 3000 spending restriction: 3 quantity per item: 2
+utility for rounded alloc | utility: 
+15.1534 | 15.2
+25.9 | 25.9
+29 | 29
+42.3 | 42.3
+49.9 | 49.9
+Bidder 0 Budget was: 8 (spend: 70.8643 %)
+Bidder 1 Budget was: 3 (spend: 66.0083 %)
+Bidder 2 Budget was: 1 (spend: 86.5199 %)
+Bidder 3 Budget was: 8 (spend: 60.3431 %)
+Bidder 4 Budget was: 3 (spend: 66.0083 %)
+
+Bidders: 5 Goods: 7 Iterations: 3000 spending restriction: 1 quantity per item: 2
+utility for rounded alloc | utility: 
+0 | 0
+6.58 | 6.58
+6.58 | 6.58
+10.4 | 10.4
+11.1 | 11.1
+Bidder 0 Budget was: 10 (spend: 0 %)
+Bidder 1 Budget was: 5 (spend: 70.8643 %)
+Bidder 2 Budget was: 8 (spend: 0 %)
+Bidder 3 Budget was: 7 (spend: 26.5306 %)
+Bidder 4 Budget was: 5 (spend: 26.5306 %)
+
+Bidders: 5 Goods: 7 Iterations: 3000 spending restriction: 50 quantity per item: 2
+utility for rounded alloc | utility: 
+16.3501 | 16.4
+23.8 | 30.9
+34 | 41.1
+34.9 | 48
+47.3 | 60.4
+Bidder 0 Budget was: 7 (spend: 70.8643 %)
+Bidder 1 Budget was: 5 (spend: 75.0265 %)
+Bidder 2 Budget was: 3 (spend: 75.0265 %)
+Bidder 3 Budget was: 2 (spend: 70.8643 %)
+Bidder 4 Budget was: 4 (spend: 70.8643 %)
+
+Bidders: 5 Goods: 7 Iterations: 3000 spending restriction: 50 quantity per item: 5
+utility for rounded alloc | utility: 
+10.275 | 19.3
+20.9 | 43.9
+38 | 94
+49.6 | 132
+56.4 | 158
+Bidder 0 Budget was: 3 (spend: 95.4179 %)
+Bidder 1 Budget was: 6 (spend: 94.6542 %)
+Bidder 2 Budget was: 9 (spend: 94.6542 %)
+Bidder 3 Budget was: 7 (spend: 94.6542 %)
+Bidder 4 Budget was: 4 (spend: 94.6542 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 50 quantity per item: 10
+utility for rounded alloc | utility: 
+11.8967 | 75.9
+18.2 | 153
+32.7 | 212
+45.7 | 268
+58.5 | 321
+Bidder 0 Budget was: 10 (spend: 100 %)
+Bidder 1 Budget was: 8 (spend: 100 %)
+Bidder 2 Budget was: 6 (spend: 100 %)
+Bidder 3 Budget was: 5 (spend: 100 %)
+Bidder 4 Budget was: 5 (spend: 100 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 3 quantity per item: 10
+utility for rounded alloc | utility: 
+9.45397 | 9.45
+21.2 | 21.2
+35.4 | 35.4
+48.3 | 48.3
+48.5 | 67.4
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 3 quantity per item: 10
+utility for rounded alloc | utility: 
+13.2382 | 13.2
+28.6 | 56.6
+41.1 | 92.1
+52.1 | 128
+68.7 | 173
+Bidder 0 Budget was: 1 (spend: 100 %)
+Bidder 1 Budget was: 6 (spend: 96.0725 %)
+Bidder 2 Budget was: 4 (spend: 96.6336 %)
+Bidder 3 Budget was: 4 (spend: 96.0725 %)
+Bidder 4 Budget was: 5 (spend: 95.4179 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 3 quantity per item: 10
+utility for rounded alloc | utility: 
+3.78571 | 9.79
+9.54 | 37.5
+20.6 | 48.6
+31 | 76
+39.4 | 91.5
+Bidder 0 Budget was: 3 (spend: 86.5199 %)
+Bidder 1 Budget was: 8 (spend: 78.5942 %)
+Bidder 2 Budget was: 2 (spend: 92.7238 %)
+Bidder 3 Budget was: 9 (spend: 78.5942 %)
+Bidder 4 Budget was: 4 (spend: 78.5942 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 5 quantity per item: 10
+utility for rounded alloc | utility: 
+3.17316 | 43.2
+13.4 | 77.4
+27.5 | 131
+44.9 | 182
+46.9 | 202
+Bidder 0 Budget was: 4 (spend: 100 %)
+Bidder 1 Budget was: 5 (spend: 100 %)
+Bidder 2 Budget was: 9 (spend: 98.8557 %)
+Bidder 3 Budget was: 8 (spend: 100 %)
+Bidder 4 Budget was: 2 (spend: 100 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 2 quantity per item: 10
+utility for rounded alloc | utility: 
+6.03714 | 6.04
+10.2 | 10.2
+14.5 | 14.5
+17.5 | 17.5
+21.8 | 21.8
+Bidder 0 Budget was: 6 (spend: 66.0083 %)
+Bidder 1 Budget was: 3 (spend: 70.8643 %)
+Bidder 2 Budget was: 10 (spend: 26.5306 %)
+Bidder 3 Budget was: 9 (spend: 26.5306 %)
+Bidder 4 Budget was: 9 (spend: 26.5306 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 2 quantity per item: 10
+utility for rounded alloc | utility: 
+5.7981 | 5.8
+9.24 | 9.24
+11 | 11
+15.7 | 15.7
+22.2 | 22.2
+Bidder 0 Budget was: 8 (spend: 37.0262 %)
+Bidder 1 Budget was: 7 (spend: 37.0262 %)
+Bidder 2 Budget was: 7 (spend: 37.0262 %)
+Bidder 3 Budget was: 10 (spend: 26.5306 %)
+Bidder 4 Budget was: 5 (spend: 53.7336 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 2 quantity per item: 10
+utility for rounded alloc | utility: 
+8.46125 | 8.46
+13.9 | 13.9
+17.5 | 17.5
+22.5 | 22.5
+25.8 | 25.8
+Bidder 0 Budget was: 9 (spend: 46.0225 %)
+Bidder 1 Budget was: 3 (spend: 78.5942 %)
+Bidder 2 Budget was: 4 (spend: 46.0225 %)
+Bidder 3 Budget was: 6 (spend: 46.0225 %)
+Bidder 4 Budget was: 10 (spend: 26.5306 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 2 quantity per item: 12
+utility for rounded alloc | utility: 
+10.1479 | 10.1
+19.5 | 19.5
+23.7 | 23.7
+30.3 | 30.3
+39.8 | 39.8
+Bidder 0 Budget was: 5 (spend: 60.3431 %)
+Bidder 1 Budget was: 6 (spend: 53.7336 %)
+Bidder 2 Budget was: 6 (spend: 53.7336 %)
+Bidder 3 Budget was: 2 (spend: 78.5942 %)
+Bidder 4 Budget was: 6 (spend: 46.0225 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 3 quantity per item: 12
+utility for rounded alloc | utility: 
+9.48923 | 9.49
+16.5 | 27.5
+25.7 | 47.7
+30.2 | 62.2
+33.3 | 77.3
+Bidder 0 Budget was: 2 (spend: 90.0963 %)
+Bidder 1 Budget was: 8 (spend: 70.8643 %)
+Bidder 2 Budget was: 4 (spend: 78.5942 %)
+Bidder 3 Budget was: 6 (spend: 70.8643 %)
+Bidder 4 Budget was: 10 (spend: 60.3431 %)
+
+Bidders: 5 Goods: 7 Iterations: 4000 spending restriction: 7 quantity per item: 9
+utility for rounded alloc | utility: 
+11.5414 | 52.5
+13.8 | 70.8
+26.9 | 184
+30.8 | 204
+33.1 | 242
+4 | 100
+1 | 100
+8 | 100
+2 | 100
+4 | 100
+

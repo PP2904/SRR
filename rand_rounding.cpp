@@ -214,6 +214,7 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
         cout << std::setprecision(pre) << MaxUtility[i] << " | " << "\n";
         myfile2 << std::setprecision(pre) << MaxUtility[i] << "\n";
 
+
     }
     return final_allocations;
 }
