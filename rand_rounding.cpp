@@ -40,7 +40,7 @@ using namespace std;
 
 //Main method
 vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector<double>> &allocVec,
-        int quant, vector<Bidder> bidders, vector<double> MaxUtility, double spendingRestriction,int num_iterations) {
+        int quant, vector<Bidder> bidders, vector<double> MaxUtility, double spendingRestriction,int num_iterations, vector <double> newPrices) {
 
 
     //Attention: allocVec für bidder ist 0, gleichzeitig ist aber MaxUtility des selben bidders 107 (!!!)
@@ -127,7 +127,8 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
 
         for (int i = 0; i < num_bidders; ++i) {
             //wenn zufallszahl <= partial_sums[i] => bieter i bekommt das fraktionale gut zugewiesen und break;
-            if (rdm_number <= partial_sums[i]) {
+              //if (rdm_number <= partial_sums[i]) {
+                if (rdm_number <= partial_sums[i] && (bidders[i].budget - sum_frac[j]/newPrices[j]) <= 0){
                 final_allocations[i][j] += sum_frac[j];
                 break;
             }
