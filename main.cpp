@@ -224,6 +224,9 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
     ofstream myfile;
     myfile.open("data.txt", std::ios_base::app);
 
+    ofstream rdResult;
+    rdResult.open("roundedResult.txt", std::ios_base::app);
+
     //passen Preise schrittweise an
     vector<double> newPrices(num_goods);
 
@@ -257,6 +260,14 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
         for (int j = 0; j < num_goods; ++j) {
             update[i][j] = double(bidders[i].valuation[j] * bidders[i].spent[j]) / newPrices[j];
 
+            //Attention for debugging
+            //TODO: checke, ob newPrices = nan ist
+            if(isnan(update[i][j])){
+                cout << "update isnan";
+                rdResult << "update isnan";
+                exit(EXIT_FAILURE);
+                //return newPrices;
+            }
         }
     }
 
@@ -274,8 +285,9 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
             //Attention: hier wird eingestiegen, wenn update vector 0 (fast 0) ist (!)
             if (accumulate(update[i].begin(), update[i].end(), 0.0) <= 0.001) {
 
-                cout << "update zero";
-                exit(EXIT_FAILURE);
+                //debugging
+                /*cout << "update zero";
+                exit(EXIT_FAILURE);*/
 
 
                 cout << endl;
@@ -327,17 +339,15 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                 rdResult << "\n";
                 rdResult << "update vector is zero";
                 rdResult << "\n";
-                return newPrices;
-                //exit(EXIT_FAILURE);
+                //return newPrices;
+                exit(EXIT_FAILURE);
+                //break;
             }
             bidders[i].spent[j] =
                     (bidders[i].budget * update[i][j]) / accumulate(update[i].begin(), update[i].end(), 0.0);
 
         }
     }
-
-
-
 
 
 
@@ -620,11 +630,6 @@ int main() {
     for (int iter = 0; iter < num_iter_exp; iter++) {
 
         if (iter > 0) {
-
-
-            /*for (int k = 0; k < num_goods; ++k) {
-                initPrices[k] = 0.0;
-            }*/
 
             double new_rdm1 = 3;
             double new_rdm2 = 14;
