@@ -125,12 +125,16 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
         for (int i = 0; i < num_bidders; ++i) {
             //wenn zufallszahl <= partial_sums[i] => bieter i bekommt das fraktionale gut zugewiesen und break;
               //if (rdm_number <= partial_sums[i]) {
-                if (rdm_number <= partial_sums[i] && (bidders[i].budget - sum_frac[j]/newPrices[j]) <= 0){
+                if (rdm_number <= partial_sums[i] && (bidders[i].budget - sum_frac[j]/newPrices[j]) <= 0
+                && accumulate(final_allocations[i].begin(), final_allocations[i].end(),0.0) + sum_frac[j] <= quant){
                 final_allocations[i][j] += sum_frac[j];
                 break;
             }
         }
     }
+
+
+
 
     //debugging purpose
     //cout << "quantity per item is: " << quant << "\n";
@@ -168,17 +172,19 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
     cout << "Randomized rounding allocations: " << endl;
     for (int i = 0; i < num_bidders; ++i) {
         for (int j = 0; j < num_goods; ++j) {
-           //cout << floor(final_allocations[i][j]) << " ";
-
+            final_allocations[i][j] += integral_allocations[i][j];
            //round half up
-           if(fractional_allocations[i][j] > 0.4){
-               final_allocations[i][j] = ceil(fractional_allocations[i][j]);
-               cout << ceil(final_allocations[i][j]) << " ";
+           if(fractional_allocations[i][j] >= 0.5){
+               //Attention: wäre das gleiche wie "+=ceil(fractional_allocations[i][j])"
+               integral_allocations[i][j] += 1;
+               final_allocations[i][j] = integral_allocations[i][j];
+               cout << final_allocations[i][j] << " ";
            }
            else{
-               final_allocations[i][j] = floor(fractional_allocations[i][j]);
-               cout << floor(final_allocations[i][j]) << " ";
+               final_allocations[i][j] = integral_allocations[i][j];
+               cout << final_allocations[i][j] << " ";
            }
+
 
         }
         cout << "|";
@@ -204,8 +210,8 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
     for (int i = 0; i < num_bidders; ++i) {
         rd_util = 0.0;
         for (int j = 0; j < num_goods; ++j) {
-            if(final_allocations[i][j] == 1){
-                rd_util += (((fractional_allocations[i][j])) * bidders[i].valuation[j]);
+            if(final_allocations[i][j] >= 1){
+                rd_util += (((final_allocations[i][j])) * bidders[i].valuation[j]);
             }
             else{
                 rd_util += 0.0;
