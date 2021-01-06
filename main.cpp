@@ -243,6 +243,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
     for (int k = 0; k < num_goods; ++k) {
         //Attention: verändert, dass alle Budgets ausgegeben werden (oder alle items aufgebraucht) - entweder oder (!)
+        // Attention: Aussage von oben stimmt nicht mehr (6.1.21)
         newPrices[k] = 0;
         for (int i = 0; i < bidders.size(); ++i) {
             newPrices[k] += bidders[i].spent[k];
@@ -511,11 +512,11 @@ int main() {
 
     vector<double> initBudget(num_bidders);
 
-    double low_Budget = 1;
+    double low_Budget = 3;
     double up_Budget = 10;
 
     double low_Val = 0;
-    double up_Val = 11;
+    double up_Val = 7;
 
     for (int k = 0; k < num_bidders; ++k) {
         bidders[k].valuation.resize(num_goods);
@@ -625,30 +626,21 @@ int main() {
 
     }
 
-    //Attention: spending vector für wdh > 1 geht noch nicht
     //FOR SCHLEIFE FÜR ANZAHL WIEDERHOLUNGEN DES GESAMTEXPERIMENTS
     for (int iter = 0; iter < num_iter_exp; iter++) {
 
         if (iter > 0) {
 
-            double new_rdm1 = 3;
-            double new_rdm2 = 14;
-
-            double low_B = new_rdm1;
-            double up_B = new_rdm2;
-
-            double low_V= 0;
-            double up_V = new_rdm2;
-
-
             for (int k = 0; k < num_bidders; ++k) {
                 //bidders[k].valuation.resize(num_goods);
                 //valuation pro Gut und Bidder
-                for (auto &v: bidders[k].valuation) v = (random_number(low_V, up_V));
+                for (auto &v: bidders[k].valuation) v = (random_number(low_Val, up_Val));
 
                 //budget
-                initBudget[k] = (random_number(low_B, up_B));
+                initBudget[k] = (random_number(low_Budget, up_Budget));
                 bidders[k].budget = initBudget[k];
+                //= 1;
+                //bidders[k].budget = budgetAgent;
 
                 bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
             }
@@ -780,7 +772,7 @@ int main() {
                     /*rdResult << "Bidder " << i << " Budget was: " << initBudget[i] << " (spend: "
                              << 100 * (1 - (bidders[i].budget / initBudget[i])) << " %)" << "\n";*/
 
-                    //Attention: hier printen wir aktuelles budget und die Ausgaben in % an
+                    //Attention: hier printen wir aktuelles budget und die Ausgaben in % aus
                     rdResult << initBudget[i] << " | " << 100 * (1 - (bidders[i].budget / initBudget[i])) << "\n";
 
 
