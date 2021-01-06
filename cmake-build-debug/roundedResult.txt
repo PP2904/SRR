@@ -1,78 +1,428 @@
-Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 3 quantity per item: 1
+Bidders: 6 Goods: 7 Iterations: 2000 spending restriction: 5 quantity per item: 6
 utility for rounded alloc | utility: 
-8.10831 | 9.78
-0 | 12.2
-0 | 18.6
-0 | 22.2
-4.74 | 29
-9 | 46.0225
-2 | 60.3431
-9 | 46.0225
-4 | 53.7336
+7.73138 | 31.3
+12.1 | 68.2
+10.8 | 118
+5.49 | 144
+5.41 | 174
+5.94 | 191
+3 | 100
+4 | 100
+6 | 97.5267
+3 | 100
+4 | 97.1145
+2 | 100
+
+Bidders: 6 Goods: 7 Iterations: 2000 spending restriction: 5 quantity per item: 6
+utility for rounded alloc | utility: 
+15.5097 | 31.6
+5.94 | 62.9
+9.2 | 121
+12.9 | 159
+12.2 | 205
+5.26 | 226
+9 | 70.8643
+6 | 70.8643
+8 | 70.8643
+13 | 70.8643
+3 | 81.6521
+9 | 66.0083
+
+Bidders: 6 Goods: 7 Iterations: 2000 spending restriction: 5 quantity per item: 6
+utility for rounded alloc | utility: 
+5.99772 | 59.8
+19.9 | 121
+16 | 145
+2.24 | 177
+6.81 | 202
+12.1 | 219
+4 | 37.0262
+5 | 37.0262
+11 | 37.0262
+14 | 37.0262
+13 | 37.0262
 9 | 37.0262
 
-Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 3 quantity per item: 1
+Bidders: 6 Goods: 7 Iterations: 2000 spending restriction: 5 quantity per item: 6
 utility for rounded alloc | utility: 
-4.02793 | 6.36
-0 | 7.6
-0 | 17.5
-0 | 21.1
-6.16 | 28.2
-9 | 0
-13 | 0
-14 | 0
-9 | 0
-9 | 0
+22.6585 | 55.3
+23.5 | 111
+21.2 | 188
+11.6 | 244
+7.75 | 277
+12.8 | 315
+7 | 37.0262
+7 | 37.0262
+7 | 37.0262
+5 | 46.0225
+6 | 37.0262
+12 | 26.5306
 
-Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 3 quantity per item: 1
+Bidders: 5 Goods: 15 Iterations: 2000 spending restriction: 3 quantity per item: 4
 utility for rounded alloc | utility: 
-5.60403 | 7.61
-0 | 9.95
-0 | 12.6
-0 | 17
-0.947 | 19.6
-14 | 0
-8 | 0
-10 | 0
-9 | 0
-6 | 0
+5.15928 | 29.7
+26.4 | 86.3
+9.32 | 132
+16.3 | 183
+22.3 | 257
+2 | 89.0055
+9 | 86.4772
+4 | 86.4772
+6 | 86.4772
+8 | 86.4772
 
-Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 7 quantity per item: 1
+Bidders: 5 Goods: 15 Iterations: 2000 spending restriction: 3 quantity per item: 4
 utility for rounded alloc | utility: 
-0 | 5.34
-8.54 | 19.8
-6.02 | 29
-0 | 32
-0 | 34
-3 | 46.0225
-8 | 46.0225
-5 | 37.0262
-2 | 46.0225
-1 | 46.0225
+22.945 | 70.8
+23.3 | 171
+35.3 | 244
+27.9 | 299
+28 | 392
+9 | 61.936
+8 | 61.936
+10 | 59.2171
+9 | 59.2171
+12 | 56.304
 
-Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 7 quantity per item: 1
+Bidders: 5 Goods: 15 Iterations: 2000 spending restriction: 3 quantity per item: 4
 utility for rounded alloc | utility: 
-0 | 5.53
-3.75 | 14.1
-4.82 | 23.2
-0 | 27.6
-0 | 28.8
-12 | 0
-12 | 0
-13 | 0
-11 | 0
-9 | 0
+35.3518 | 85.9
+28.5 | 178
+30.4 | 256
+35.3 | 322
+30.2 | 395
+7 | 12.8889
+3 | 12.8889
+4 | 12.8889
+12 | 12.8889
+5 | 12.8889
 
-Bidders: 5 Goods: 7 Iterations: 2000 spending restriction: 7 quantity per item: 1
+Bidders: 5 Goods: 15 Iterations: 2000 spending restriction: 3 quantity per item: 4
 utility for rounded alloc | utility: 
-0 | 3.73
-6.96 | 18.7
-6.62 | 27.5
-0 | 33.6
-0 | 35.1
-14 | 0
+18.01 | 55.2
+40.3 | 143
+19.9 | 205
+24.6 | 269
+30 | 364
 12 | 0
 3 | 0
+10 | 0
 12 | 0
+3 | 0
+
+Bidders: 5 Goods: 15 Iterations: 2000 spending restriction: 3 quantity per item: 4
+utility for rounded alloc | utility: 
+30.5166 | 71.3
+40.2 | 199
+20.2 | 258
+34.6 | 327
+24.2 | 393
+6 | 0
+12 | 0
+3 | 0
 8 | 0
+10 | 0
+
+Bidders: 6 Goods: 7 Iterations: 10 spending restriction: 5 quantity per item: 5
+utility for rounded alloc | utility: 
+9.74342 | 19.8
+8.26 | 30.1
+8.32 | 38.5
+0 | 59.3
+0 | 69.6
+0 | 80.8
+10 | 78.5942
+5 | 78.5942
+2 | 78.5942
+9 | 78.5942
+5 | 78.5942
+4 | 78.5942
+
+Bidders: 6 Goods: 7 Iterations: 10 spending restriction: 5 quantity per item: 5
+utility for rounded alloc | utility: 
+16.9742 | 34.8
+16 | 52.8
+8.58 | 104
+9.48 | 132
+12.8 | 160
+13.1 | 196
+3 | 70.8643
+4 | 60.3431
+10 | 46.0225
+13 | 46.0225
+11 | 46.0225
+7 | 46.0225
+
+Bidders: 6 Goods: 7 Iterations: 10 spending restriction: 5 quantity per item: 5
+utility for rounded alloc | utility: 
+31.2858 | 53.9
+17.3 | 97.8
+0 | 133
+11.4 | 164
+16.9 | 205
+7.33 | 256
+11 | 53.7336
+12 | 53.7336
+4 | 46.0225
+5 | 46.0225
+6 | 46.0225
+9 | 46.0225
+
+Bidders: 6 Goods: 7 Iterations: 200 spending restriction: 3 quantity per item: 5
+utility for rounded alloc | utility: 
+6.16802 | 11.2
+10.1 | 26.2
+0 | 29.3
+0 | 43.9
+0 | 49.3
+3.23 | 54.9
+7 | 66.0083
+10 | 60.3431
+2 | 81.6521
+6 | 66.0083
+4 | 66.0083
+3 | 66.0083
+
+Bidders: 6 Goods: 7 Iterations: 200 spending restriction: 3 quantity per item: 5
+utility for rounded alloc | utility: 
+24.7668 | 25.7
+9.96 | 52.6
+13.1 | 80.7
+8.55 | 112
+7.48 | 124
+4.97 | 146
+3 | 100
+7 | 37.0262
+8 | 37.0262
+13 | 37.0262
+7 | 37.0262
+13 | 26.5306
+
+Bidders: 6 Goods: 7 Iterations: 200 spending restriction: 3 quantity per item: 5
+utility for rounded alloc | utility: 
+18.591 | 33.9
+18.3 | 75.1
+17.2 | 101
+18 | 145
+5.35 | 154
+10.7 | 180
+12 | 37.0262
+10 | 37.0262
+12 | 26.5306
+7 | 37.0262
+11 | 26.5306
+12 | 14.2857
+
+Bidders: 6 Goods: 7 Iterations: 200 spending restriction: 3 quantity per item: 5
+utility for rounded alloc | utility: 
+39.2373 | 51.6
+10.3 | 80.7
+21.8 | 133
+17.7 | 180
+20.6 | 206
+5.43 | 220
+12 | 37.0262
+5 | 53.7336
+6 | 46.0225
+13 | 37.0262
+13 | 14.2857
+14 | 14.2857
+
+Bidders: 6 Goods: 7 Iterations: 10 spending restriction: 4 quantity per item: 5
+utility for rounded alloc | utility: 
+0 | 8.75
+4.2 | 30
+5.87 | 45.8
+0 | 68.8
+0 | 81.4
+0 | 85.2
+3 | 78.5942
+8 | 78.5942
+5 | 78.5942
+8 | 78.5942
+3 | 78.5942
+1 | 78.5942
+
+Bidders: 6 Goods: 7 Iterations: 10 spending restriction: 4 quantity per item: 5
+utility for rounded alloc | utility: 
+0 | 63.9
+2.27 | 89.6
+1.76 | 102
+14.7 | 141
+12 | 172
+9.58 | 197
+14 | 37.0262
+11 | 37.0262
+3 | 46.0225
+4 | 37.0262
+12 | 37.0262
+10 | 26.5306
+
+Bidders: 6 Goods: 7 Iterations: 10 spending restriction: 4 quantity per item: 5
+utility for rounded alloc | utility: 
+14.9369 | 57.3
+2.27 | 124
+22.2 | 162
+14.1 | 200
+1.71 | 210
+11.2 | 233
+14 | 46.0225
+9 | 46.0225
+13 | 46.0225
+3 | 66.0083
+5 | 46.0225
+9 | 46.0225
+
+Bidders: 6 Goods: 7 Iterations: 10 spending restriction: 4 quantity per item: 5
+utility for rounded alloc | utility: 
+8.76506 | 38.9
+13.6 | 103
+10.6 | 138
+19.5 | 175
+14.2 | 215
+16.9 | 247
+6 | 53.7336
+11 | 37.0262
+14 | 37.0262
+13 | 37.0262
+10 | 26.5306
+4 | 46.0225
+
+Bidders: 9 Goods: 13 Iterations: 2000 spending restriction: 5 quantity per item: 4
+utility for rounded alloc | utility: 
+2.68113 | 31.1
+0 | 46.3
+12.9 | 77.2
+14.6 | 105
+9.54 | 124
+4.97 | 158
+6.19 | 196
+15.2 | 227
+0 | 241
+8 | 89.3669
+3 | 89.3669
+9 | 88.4808
+6 | 88.4808
+4 | 89.3669
+6 | 88.4808
+7 | 88.4808
+5 | 88.4808
+3 | 88.4808
+
+Bidders: 9 Goods: 13 Iterations: 2000 spending restriction: 5 quantity per item: 4
+utility for rounded alloc | utility: 
+19.2863 | 72.8
+12.4 | 96.3
+25.7 | 143
+21.8 | 204
+16.7 | 232
+7.31 | 282
+11.1 | 305
+15.5 | 327
+5.57 | 359
+11 | 32.9823
+14 | 32.9823
+3 | 32.9823
+12 | 27.3975
+6 | 32.9823
+13 | 27.3975
+3 | 32.9823
+3 | 27.3975
+7 | 27.3975
+
+Bidders: 9 Goods: 13 Iterations: 2000 spending restriction: 5 quantity per item: 4
+utility for rounded alloc | utility: 
+22.0232 | 36.7
+12.3 | 90.4
+18.2 | 130
+12.4 | 161
+30.7 | 206
+1.87 | 219
+6.45 | 259
+7.78 | 291
+7.09 | 331
+8 | 32.9823
+6 | 32.9823
+14 | 27.3975
+3 | 32.9823
+11 | 27.3975
+7 | 32.9823
+11 | 27.3975
+8 | 27.3975
+5 | 27.3975
+
+Bidders: 9 Goods: 13 Iterations: 2000 spending restriction: 5 quantity per item: 4
+utility for rounded alloc | utility: 
+21.2471 | 76.5
+13.2 | 115
+19.7 | 157
+19.9 | 193
+14 | 224
+6.16 | 299
+7.88 | 328
+9.02 | 351
+4.56 | 376
+5 | 14.7929
+13 | 14.7929
+10 | 14.7929
+7 | 14.7929
+6 | 14.7929
+9 | 14.7929
+11 | 14.7929
+3 | 14.7929
+7 | 7.69231
+
+Bidders: 9 Goods: 13 Iterations: 2000 spending restriction: 5 quantity per item: 4
+utility for rounded alloc | utility: 
+16.7715 | 51.9
+6.64 | 75.8
+18 | 121
+11.7 | 178
+24.7 | 223
+2.84 | 252
+9 | 285
+10.8 | 317
+1.01 | 330
+5 | 0
+13 | 0
+4 | 0
+6 | 0
+12 | 0
+14 | 0
+5 | 0
+10 | 0
+12 | 0
+
+Bidders: 15 Goods: 20 Iterations: 2000 spending restriction: 8 quantity per item: 6
+utility for rounded alloc | utility: 
+21.5836 | 47.1
+0 | 74.5
+10.9 | 103
+0 | 114
+13 | 178
+29.3 | 260
+8.34 | 322
+16.5 | 369
+14.5 | 411
+7.27 | 421
+8.91 | 432
+16.8 | 518
+7.83 | 529
+15.6 | 573
+6.49 | 581
+5 | 96.0501
+3 | 96.0501
+3 | 96.0501
+1 | 100
+7 | 96.0501
+10 | 96.0501
+8 | 96.0501
+5 | 96.0501
+4 | 96.0501
+1 | 100
+1 | 100
+10 | 96.0501
+1 | 100
+5 | 95.8422
+1 | 100
 

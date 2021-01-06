@@ -146,6 +146,10 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
                 break;
             }
 
+
+            //TODO: nach dem ersten Durchlauf (iter = 1) gehts in die folgende if-Abfrage nicht mehr rein (!)
+
+
             //Attention: irgendwie funktioniert das nicht mit dem allocVec ... dieser darf maximal so groß sein wie quantItem ...
             if ((double(spendPerItem[p.second] + (newShare * newPrices[p.second])) <= spendingRestriction) &&
                 quantItem[p.second] - newShare >= 0.0 &&
@@ -214,7 +218,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                             vector<vector<myTuple>> &SortedMbbVec,
                             vector<int> &interGood,
                             vector<vector<double>> &spendVec, vector<vector<double>> &update,
-                            vector<double> initBudget, vector<vector<double>> &allocVec,
+                            vector<double> &initBudget, vector<vector<double>> &allocVec,
                             int quant, int num_iterations, vector<double> &allocVecOverall) {
 
     ofstream myfile;
@@ -269,6 +273,11 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
             //Attention: hier wird eingestiegen, wenn update vector 0 (fast 0) ist (!)
             if (accumulate(update[i].begin(), update[i].end(), 0.0) <= 0.001) {
+
+                cout << "update zero";
+                exit(EXIT_FAILURE);
+
+
                 cout << endl;
                 //wieviel bleibt pro Gut übrig:
                 cout << "available items: \n";
@@ -318,7 +327,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                 rdResult << "\n";
                 rdResult << "update vector is zero";
                 rdResult << "\n";
-                break;
+                return newPrices;
                 //exit(EXIT_FAILURE);
             }
             bidders[i].spent[j] =
@@ -636,8 +645,12 @@ int main() {
                 initBudget[k] = (random_number(low_B, up_B));
                 bidders[k].budget = initBudget[k];
 
-
                 bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
+            }
+
+            for (int j = 0; j < num_goods; ++j){
+                spendPerItem[j] = 0.0;
+                quantItem[j] = quant;
             }
 
 
