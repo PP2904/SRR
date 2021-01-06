@@ -606,7 +606,7 @@ int main() {
 
     }
 
-    //Attention: das funktioniert leider nicht, da ich einfach mehrfach das selbe ergebnis bekomme
+    //Attention: spending vector für wdh > 1 geht noch nicht
     //FOR SCHLEIFE FÜR ANZAHL WIEDERHOLUNGEN DES GESAMTEXPERIMENTS
     for (int iter = 0; iter < num_iter_exp; iter++) {
 
@@ -641,14 +641,17 @@ int main() {
             }
 
 
-            //quantity per item
-            //int quant;
+            /*
+             * HIER KÖNNEN MEHRERE EIGENSCHAFTEN STEHEN
+             */
+
+            /*//quantity per item
             cout << "Quantity per item: ";
             cin >> quant;
             vector<double> quantItem(num_goods);
             for (int j = 0; j < num_goods; ++j) {
                 quantItem[j] = quant;
-            }
+            }*/
 
         }
 
@@ -724,7 +727,6 @@ int main() {
                     cout << "Bidder " << i << " allocation: \n";
                     for (int j = 0; j < num_goods; ++j) {
 
-                        //Attention: problem ist hier, da allocVec auch > quant eines Guts sein kann
                         //alloc of goods for each bidder (findet in spendingGraph statt)
                         //allocVec[i][j] = double(spendVec[i][j] / newPrices[j]);
 
@@ -866,7 +868,6 @@ int main() {
 
 
                         //alloc of goods for each bidder (findet in spendingGraph statt)
-                        //Attention: problem ist hier, da allocVec auch > quant eines Guts sein kann
                         //allocVec[i][j] = double(spendVec[i][j] / newPrices[j]);
 
                         cout << allocVec[i][j] << " | ";
