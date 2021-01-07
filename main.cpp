@@ -864,6 +864,7 @@ int main() {
 
                 //print spending vector
                 for (int i = 0; i < num_bidders; ++i) {
+                    utility = 0.0;
                     cout << "Bidder " << i << " spends: " << "\n";
                     myfile << "Bidder " << i << " spends: " << "\n";
                     for (int j = 0; j < num_goods; ++j) {

@@ -2671,3 +2671,485 @@ Good 1 : 10
 Good 2 : 7.90616
 Good 3 : 9.43879
 
+Bidders: 5 Goods: 7 Iterations: 20 spending restriction: 3 quantity per item: 3
+
+Final:
+Good 0 costs: 3.44171 (PR-D: 6.09104 )
+Good 1 costs: 3.22035 (PR-D: 3.27763 )
+Good 2 costs: 4.59771 (PR-D: 4.98524 )
+Good 3 costs: 2.45977 (PR-D: 4.93523 )
+Good 4 costs: 1.94046 (PR-D: 3.17295 )
+Good 5 costs: 1.61017 (PR-D: 5.56211 )
+Good 6 costs: 3.4104 (PR-D: 3.9758 )
+
+Bidder 0 spends: 
+0 | 0 | 1.28571 | 0 | 0 | 2.85631 | 0 | 
+Bidder 0 allocation: 
+0 | 0 | 0.2 | 0 | 0 | 1.63572 | 0 | 
+Utility: 6.30715
+Budget was: 9 (spend: 46.0225 %)
+
+Bidder 1 spends: 
+0.809663 | 0 | 1.28571 | 0.944606 | 0 | 0 | 1.10204 | 
+Bidder 1 allocation: 
+0.141574 | 0 | 0.2 | 0.220231 | 0 | 0 | 0.115968 | 
+Utility: 9.0106
+Budget was: 9 (spend: 46.0225 %)
+
+Bidder 2 spends: 
+2.12245 | 0.7197 | 0 | 0.83965 | 0 | 0 | 0 | 
+Bidder 2 allocation: 
+0.31289 | 0.190705 | 0 | 0.195761 | 0 | 0 | 0 | 
+Utility: 12.3703
+Budget was: 8 (spend: 46.0225 %)
+
+Bidder 3 spends: 
+0 | 0.899625 | 0 | 1.04956 | 1.22449 | 0 | 1.42857 | 
+Bidder 3 allocation: 
+0 | 0.238381 | 0 | 0.244701 | 0.239074 | 0 | 0.222222 | 
+Utility: 15.155
+Budget was: 10 (spend: 46.0225 %)
+
+Bidder 4 spends: 
+0 | 1.30507 | 0.283264 | 0 | 1.71208 | 0 | 0.45091 | 
+Bidder 4 allocation: 
+0 | 0.359203 | 0.0628735 | 0 | 0.353816 | 0 | 0.120839 | 
+Utility: 19.4988
+Budget was: 5 (spend: 75.0265 %)
+
+Good 0 : 2.54554
+Good 1 : 2.21171
+Good 2 : 2.53713
+Good 3 : 2.33931
+Good 4 : 2.40711
+Good 5 : 1.36428
+Good 6 : 2.54097
+
+Bidders: 5 Goods: 7 Iterations: 20 spending restriction: 3 quantity per item: 3
+
+Final:
+Good 0 costs: 0.951388 (PR-D: 6.15546 )
+Good 1 costs: 0.293003 (PR-D: 3.25396 )
+Good 2 costs: 0.850585 (PR-D: 4.99873 )
+Good 3 costs: 1.7762 (PR-D: 4.92678 )
+Good 4 costs: 1.17055 (PR-D: 3.16985 )
+Good 5 costs: 0.574276 (PR-D: 5.53473 )
+Good 6 costs: 1.20314 (PR-D: 3.96049 )
+
+Bidder 0 spends: 
+0 | 0 | 1.67127 | 2.6316 | 0 | 3.13957 | 0.242798 | 
+Bidder 0 allocation: 
+0 | 0 | 0.424037 | 1.0543 | 0 | 1.8366 | 0.166036 | 
+Utility: 11.4371
+Budget was: 5 (spend: 70.8643 %)
+
+Bidder 1 spends: 
+0.809663 | 0.584756 | 1.28571 | 1.31195 | 0.315637 | 0.858188 | 1.22691 | 
+Bidder 1 allocation: 
+0.141574 | 0.446282 | 0.2 | 0.370697 | 0.177144 | 0.495554 | 0.213832 | 
+Utility: 22.5382
+Budget was: 3 (spend: 75.0265 %)
+
+Bidder 2 spends: 
+2.12245 | 1.2095 | 0.779675 | 0.83965 | 1.37086 | 0 | 0.194238 | 
+Bidder 2 allocation: 
+0.31289 | 0.485978 | 0.360863 | 0.195761 | 0.624998 | 0 | 0.132828 | 
+Utility: 31.9023
+Budget was: 4 (spend: 70.8643 %)
+
+Bidder 3 spends: 
+2.36866 | 1.63432 | 0 | 1.04956 | 2.08163 | 0 | 1.71993 | 
+Bidder 3 allocation: 
+1.31814 | 0.681291 | 0 | 0.244701 | 0.680924 | 0 | 0.421465 | 
+Utility: 44.7307
+Budget was: 6 (spend: 70.8643 %)
+
+Bidder 4 spends: 
+0 | 1.30507 | 1.8701 | 0 | 1.71208 | 0 | 2.16449 | 
+Bidder 4 allocation: 
+0 | 0.359203 | 0.741015 | 0 | 0.353816 | 0 | 0.839493 | 
+Utility: 56.0216
+Budget was: 5 (spend: 66.0083 %)
+
+Good 0 : 1.68186
+Good 1 : 1.81554
+Good 2 : 1.73696
+Good 3 : 1.79524
+Good 4 : 1.75601
+Good 5 : 2.30356
+Good 6 : 1.68538
+
+Bidders: 5 Goods: 7 Iterations: 60 spending restriction: 3 quantity per item: 3
+
+Final:
+Good 0 costs: 2.21765 (PR-D: 5.99161 )
+Good 1 costs: 2.32663 (PR-D: 4.99427 )
+Good 2 costs: 1.87356 (PR-D: 3.99953 )
+Good 3 costs: 1.87161 (PR-D: 4.61207 )
+Good 4 costs: 2.20935 (PR-D: 4.02282 )
+Good 5 costs: 2.19404 (PR-D: 4 )
+Good 6 costs: 3.10384 (PR-D: 5.37969 )
+
+Bidder 0 spends: 
+0.396569 | 0.629738 | 0 | 0 | 1.73713 | 0 | 0.857143 | 
+Bidder 0 allocation: 
+0.150245 | 0.160839 | 0 | 0 | 0.507066 | 0 | 0.2 | 
+Utility: 4.73953
+Budget was: 6 (spend: 60.3431 %)
+
+Bidder 1 spends: 
+0 | 0 | 0.616886 | 0 | 0.979592 | 2.70221 | 0 | 
+Bidder 1 allocation: 
+0 | 0 | 0.236874 | 0 | 0.283725 | 0.713671 | 0 | 
+Utility: 13.1425
+Budget was: 8 (spend: 53.7336 %)
+
+Bidder 2 spends: 
+0 | 0 | 0.462664 | 2.76135 | 0 | 0 | 0 | 
+Bidder 2 allocation: 
+0 | 0 | 0.177656 | 0.803728 | 0 | 0 | 0 | 
+Utility: 20.0122
+Budget was: 6 (spend: 53.7336 %)
+
+Bidder 3 spends: 
+0 | 2.30112 | 0 | 0 | 0 | 0 | 0.385554 | 
+Bidder 3 allocation: 
+0 | 0.573639 | 0 | 0 | 0 | 0 | 0.085328 | 
+Utility: 23.8807
+Budget was: 5 (spend: 53.7336 %)
+
+Bidder 4 spends: 
+2.27405 | 0 | 1.67073 | 0 | 0 | 0 | 1.42857 | 
+Bidder 4 allocation: 
+0.446266 | 0 | 0.590211 | 0 | 0 | 0 | 0.333333 | 
+Utility: 29.6258
+Budget was: 10 (spend: 53.7336 %)
+
+Good 0 : 2.40349
+Good 1 : 2.26552
+Good 2 : 1.99526
+Good 3 : 2.19627
+Good 4 : 2.20921
+Good 5 : 2.28633
+Good 6 : 2.38134
+
+Bidders: 5 Goods: 7 Iterations: 60 spending restriction: 3 quantity per item: 3
+
+Final:
+Good 0 costs: 2.22615 (PR-D: 5.9999 )
+Good 1 costs: 1.69984 (PR-D: 4.99993 )
+Good 2 costs: 1.84349 (PR-D: 3.99999 )
+Good 3 costs: 1.47095 (PR-D: 4.61461 )
+Good 4 costs: 1.4841 (PR-D: 4.00186 )
+Good 5 costs: 1.46426 (PR-D: 4 )
+Good 6 costs: 1.7083 (PR-D: 5.3837 )
+
+Bidder 0 spends: 
+1.88345 | 1.63218 | 0.736486 | 0.734694 | 1.73713 | 0 | 0.857143 | 
+Bidder 0 allocation: 
+0.757207 | 0.408023 | 0.196877 | 0.32925 | 0.507066 | 0 | 0.2 | 
+Utility: 8.98379
+Budget was: 6 (spend: 66.0083 %)
+
+Bidder 1 spends: 
+1.42857 | 0 | 1.27783 | 0 | 2.92878 | 2.70221 | 1.9956 | 
+Bidder 1 allocation: 
+0.644278 | 0 | 0.397485 | 0 | 0.89106 | 0.713671 | 0.556252 | 
+Utility: 23.166
+Budget was: 10 (spend: 60.3431 %)
+
+Bidder 2 spends: 
+0 | 0.429617 | 0.632623 | 3.87214 | 0 | 0.269888 | 0 | 
+Bidder 2 allocation: 
+0 | 0.119269 | 0.227911 | 1.33088 | 0 | 0.12305 | 0 | 
+Utility: 35.0756
+Budget was: 3 (spend: 66.0083 %)
+
+Bidder 3 spends: 
+0 | 3.85078 | 0.283264 | 0.612245 | 0.330475 | 0.524781 | 0.385554 | 
+Bidder 3 allocation: 
+0 | 1.08671 | 0.0837588 | 0.274375 | 0.13535 | 0.208511 | 0.085328 | 
+Utility: 42.4513
+Budget was: 5 (spend: 66.0083 %)
+
+Bidder 4 spends: 
+2.27405 | 0 | 2.81638 | 0 | 0.7197 | 1.98251 | 2.40816 | 
+Bidder 4 allocation: 
+0.446266 | 0 | 0.839772 | 0 | 0.270318 | 0.85443 | 0.56844 | 
+Utility: 55.4102
+Budget was: 8 (spend: 60.3431 %)
+
+Good 0 : 1.74876
+Good 1 : 2.12047
+Good 2 : 2.25894
+Good 3 : 1.86923
+Good 4 : 1.987
+Good 5 : 1.81401
+Good 6 : 2.20864
+
+Bidders: 5 Goods: 7 Iterations: 70 spending restriction: 3 quantity per item: 3
+
+Final:
+Good 0 costs: 2.31332 (PR-D: 3.8126 )
+Good 1 costs: 2.31332 (PR-D: 3.16542 )
+Good 2 costs: 3.08443 (PR-D: 3.7237 )
+Good 3 costs: 2.31332 (PR-D: 2.70195 )
+Good 4 costs: 1.72268 (PR-D: 4.02374 )
+Good 5 costs: 2.41173 (PR-D: 4.46154 )
+Good 6 costs: 2.41167 (PR-D: 3.11107 )
+
+Bidder 0 spends: 
+0.242798 | 0.716028 | 0 | 0 | 0 | 1.52233 | 1.06206 | 
+Bidder 0 allocation: 
+0.10302 | 0.234563 | 0 | 0 | 0 | 0.410919 | 0.259141 | 
+Utility: 4.13243
+Budget was: 5 (spend: 70.8643 %)
+
+Bidder 1 spends: 
+0.629738 | 0 | 0 | 0.462664 | 0.539775 | 0.734694 | 1.85714 | 
+Bidder 1 allocation: 
+0.165672 | 0 | 0 | 0.164588 | 0.228766 | 0.149585 | 0.46727 | 
+Utility: 8.04816
+Budget was: 7 (spend: 60.3431 %)
+
+Bidder 2 spends: 
+2.12411 | 0 | 0 | 2.47813 | 0.771107 | 0 | 0 | 
+Bidder 2 allocation: 
+0.479865 | 0 | 0 | 0.660433 | 0.326809 | 0 | 0 | 
+Utility: 13.263
+Budget was: 10 (spend: 53.7336 %)
+
+Bidder 3 spends: 
+0 | 0 | 0.385554 | 0 | 1.58684 | 0.714286 | 0 | 
+Bidder 3 allocation: 
+0 | 0 | 0.0908311 | 0 | 0.530433 | 0.2 | 0 | 
+Utility: 17.6785
+Budget was: 5 (spend: 53.7336 %)
+
+Bidder 4 spends: 
+0 | 2.12411 | 2.47813 | 0 | 0 | 0 | 0 | 
+Bidder 4 allocation: 
+0 | 0.461168 | 0.573566 | 0 | 0 | 0 | 0 | 
+Utility: 21.3562
+Budget was: 10 (spend: 46.0225 %)
+
+Good 0 : 2.25144
+Good 1 : 2.30427
+Good 2 : 2.3356
+Good 3 : 2.17498
+Good 4 : 1.91399
+Good 5 : 2.2395
+Good 6 : 2.27359
+
+Bidders: 5 Goods: 7 Iterations: 70 spending restriction: 3 quantity per item: 3
+
+Final:
+Good 0 costs: 3.2087 (PR-D: 3.79721 )
+Good 1 costs: 3.07425 (PR-D: 3.15592 )
+Good 2 costs: 2.37661 (PR-D: 3.76528 )
+Good 3 costs: 3.06807 (PR-D: 2.69474 )
+Good 4 costs: 5.66764 (PR-D: 4.00071 )
+Good 5 costs: 4.1362 (PR-D: 4.448 )
+Good 6 costs: 2.88876 (PR-D: 3.13814 )
+
+Bidder 0 spends: 
+1.09994 | 2.2558 | 0.734694 | 0.629738 | 0.396569 | 1.985 | 1.06206 | 
+Bidder 0 allocation: 
+0.217306 | 0.749638 | 0.666667 | 0.421192 | 0.0699708 | 0.570761 | 0.259141 | 
+Utility: 11.5462
+Budget was: 7 (spend: 66.0083 %)
+
+Bidder 1 spends: 
+0.629738 | 1.42857 | 0 | 1.68715 | 0.539775 | 0.734694 | 2.90671 | 
+Bidder 1 allocation: 
+0.165672 | 0.617541 | 0 | 0.980914 | 0.228766 | 0.149585 | 0.648757 | 
+Utility: 21.6621
+Budget was: 10 (spend: 37.0262 %)
+
+Bidder 2 spends: 
+2.12411 | 0 | 0.944606 | 2.47813 | 0.771107 | 2.38776 | 0 | 
+Bidder 2 allocation: 
+0.479865 | 0 | 0.857143 | 0.660433 | 0.326809 | 0.647614 | 0 | 
+Utility: 31.0927
+Budget was: 9 (spend: 37.0262 %)
+
+Bidder 3 spends: 
+0 | 0 | 0.385554 | 0 | 3.97459 | 0.714286 | 0.944606 | 
+Bidder 3 allocation: 
+0 | 0 | 0.0908311 | 0 | 1.40351 | 0.2 | 0.163339 | 
+Utility: 41.3715
+Budget was: 9 (spend: 37.0262 %)
+
+Bidder 4 spends: 
+1.85714 | 2.12411 | 2.47813 | 0 | 0 | 0 | 0.734694 | 
+Bidder 4 allocation: 
+0.546565 | 0.461168 | 0.573566 | 0 | 0 | 0 | 0.127041 | 
+Utility: 46.882
+Budget was: 7 (spend: 37.0262 %)
+
+Good 0 : 2.33915
+Good 1 : 1.86738
+Good 2 : 1.47619
+Good 3 : 1.76248
+Good 4 : 2.05695
+Good 5 : 2.19254
+Good 6 : 2.52813
+
+Bidders: 2 Goods: 3 Iterations: 10 spending restriction: 3 quantity per item: 3
+
+Final:
+Good 0 costs: 4.5763 (PR-D: 3.03593 )
+Good 1 costs: 2.25884 (PR-D: 2.95024 )
+Good 2 costs: 0.868562 (PR-D: 3.01383 )
+
+Bidder 0 spends: 
+0 | 2.66667 | 2.96296 | 
+Bidder 0 allocation: 
+0 | 0.5 | 1.52977 | 
+Utility: 6.55954
+Budget was: 8 (spend: 70.3704 %)
+
+Bidder 1 spends: 
+2.66667 | 0 | 0 | 
+Bidder 1 allocation: 
+0.5 | 0 | 0 | 
+Utility: 9.05954
+Budget was: 8 (spend: 33.3333 %)
+
+Good 0 : 2.5
+Good 1 : 2.5
+Good 2 : 1.47023
+
+Bidders: 2 Goods: 3 Iterations: 10 spending restriction: 3 quantity per item: 3
+
+Final:
+Good 0 costs: 0.30263 (PR-D: 3.00115 )
+Good 1 costs: 0.292097 (PR-D: 2.99836 )
+Good 2 costs: 0.458771 (PR-D: 3.00049 )
+
+Bidder 0 spends: 
+1.99177 | 2.66667 | 4.44444 | 
+Bidder 0 allocation: 
+0.758619 | 0.5 | 2.31804 | 
+Utility: 18.7013
+Budget was: 4 (spend: 86.8313 %)
+
+Bidder 1 spends: 
+3.3251 | 2.81481 | 0 | 
+Bidder 1 allocation: 
+0.965047 | 1.419 | 0 | 
+Utility: 27.2725
+Budget was: 4 (spend: 86.8313 %)
+
+Good 0 : 1.77633
+Good 1 : 1.581
+Good 2 : 2.21173
+
+Bidders: 5 Goods: 7 Iterations: 20 spending restriction: 3 quantity per item: 4
+
+Final:
+Good 0 costs: 1.99325 (PR-D: 5.96016 )
+Good 1 costs: 2.32591 (PR-D: 4.09716 )
+Good 2 costs: 4.52642 (PR-D: 1.90402 )
+Good 3 costs: 2.55644 (PR-D: 4.28728 )
+Good 4 costs: 4.9522 (PR-D: 4.32333 )
+Good 5 costs: 3.87941 (PR-D: 5.81606 )
+Good 6 costs: 2.67719 (PR-D: 7.612 )
+
+Bidder 0 spends: 
+0.899625 | 0 | 2.27405 | 0 | 1.42857 | 0 | 0 | 
+Bidder 0 allocation: 
+0.304431 | 0 | 0.29281 | 0 | 0.2 | 0 | 0 | 
+Utility: 3.76572
+Budget was: 10 (spend: 46.0225 %)
+
+Bidder 1 spends: 
+0.462664 | 0 | 0.539775 | 0.969654 | 0 | 0.396569 | 1.59184 | 
+Bidder 1 allocation: 
+0.189448 | 0 | 0.0936427 | 0.274201 | 0 | 0.086949 | 0.302778 | 
+Utility: 5.07545
+Budget was: 6 (spend: 66.0083 %)
+
+Bidder 2 spends: 
+0.809663 | 0 | 0 | 0.944606 | 1.28571 | 1.10204 | 0 | 
+Bidder 2 allocation: 
+0.273987 | 0 | 0 | 0.22802 | 0.18 | 0.212675 | 0 | 
+Utility: 2.82743
+Budget was: 9 (spend: 46.0225 %)
+
+Bidder 3 spends: 
+0.7197 | 2.9621 | 0 | 0 | 0 | 0 | 0 | 
+Bidder 3 allocation: 
+0.243544 | 0.58653 | 0 | 0 | 0 | 0 | 0 | 
+Utility: 5.56697
+Budget was: 8 (spend: 46.0225 %)
+
+Bidder 4 spends: 
+0 | 0 | 0 | 1.04956 | 0 | 1.42857 | 1.22449 | 
+Bidder 4 allocation: 
+0 | 0 | 0 | 0.253356 | 0 | 0.2 | 0.30463 | 
+Utility: 3.43194
+Budget was: 10 (spend: 37.0262 %)
+
+Good 0 : 2.98859
+Good 1 : 3.41347
+Good 2 : 3.61355
+Good 3 : 3.24442
+Good 4 : 3.62
+Good 5 : 3.50038
+Good 6 : 3.39259
+
+Bidders: 5 Goods: 7 Iterations: 20 spending restriction: 3 quantity per item: 4
+
+Final:
+Good 0 costs: 1.29742 (PR-D: 5.90005 )
+Good 1 costs: 0.771113 (PR-D: 4.04022 )
+Good 2 costs: 0.295778 (PR-D: 1.96067 )
+Good 3 costs: 0.679874 (PR-D: 4.22056 )
+Good 4 costs: 0.560261 (PR-D: 4.15561 )
+Good 5 costs: 0.773955 (PR-D: 5.88019 )
+Good 6 costs: 0.595908 (PR-D: 7.8427 )
+
+Bidder 0 spends: 
+2.26406 | 0 | 2.27405 | 0.463793 | 1.42857 | 0 | 2.88743 | 
+Bidder 0 allocation: 
+0.885706 | 0 | 0.29281 | 0.375505 | 0.2 | 0 | 1.22478 | 
+Utility: 9.73202
+Budget was: 6 (spend: 78.5942 %)
+
+Bidder 1 spends: 
+0.462664 | 2.22157 | 0.539775 | 1.43345 | 1.49051 | 0.936345 | 1.59184 | 
+Bidder 1 allocation: 
+0.189448 | 1.3472 | 0.0936427 | 0.649707 | 1.17113 | 0.355172 | 0.302778 | 
+Utility: 14.6345
+Budget was: 6 (spend: 78.5942 %)
+
+Bidder 2 spends: 
+1.23823 | 0.598679 | 0 | 1.95954 | 1.60135 | 1.10204 | 0.0917393 | 
+Bidder 2 allocation: 
+0.489006 | 0.470334 | 0 | 0.716962 | 0.54555 | 0.212675 | 0.0944604 | 
+Utility: 11.4048
+Budget was: 3 (spend: 81.6521 %)
+
+Bidder 3 spends: 
+1.29113 | 2.9621 | 0.729292 | 0.309195 | 0 | 1.53385 | 0 | 
+Bidder 3 allocation: 
+0.530236 | 0.58653 | 0.772892 | 0.250337 | 0 | 0.775192 | 0 | 
+Utility: 11.1061
+Budget was: 4 (spend: 78.5942 %)
+
+Bidder 4 spends: 
+0.571429 | 0 | 1.15928 | 1.21605 | 0.194238 | 2.33819 | 1.22449 | 
+Bidder 4 allocation: 
+0.286691 | 0 | 0.984701 | 0.378116 | 0.254297 | 0.637389 | 0.30463 | 
+Utility: 13.0225
+Budget was: 4 (spend: 75.0265 %)
+
+Good 0 : 2.63032
+Good 1 : 2.18247
+Good 2 : 2.24241
+Good 3 : 2.38495
+Good 4 : 2.20903
+Good 5 : 2.5192
+Good 6 : 2.68076
+
