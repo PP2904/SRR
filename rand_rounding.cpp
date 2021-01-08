@@ -174,7 +174,7 @@ vector<vector<double>> roundingSRE(int num_bidders, int num_goods, vector<vector
         for (int j = 0; j < num_goods; ++j) {
             final_allocations[i][j] += integral_allocations[i][j];
            //round half up - attention: ändert aber nix an den 50% überbleibenden Gütern
-           if(fractional_allocations[i][j] >= 0.9){
+           if(fractional_allocations[i][j] >= 0.7){
                //Attention: wäre das gleiche wie "+=ceil(fractional_allocations[i][j])"
                integral_allocations[i][j] += 1;
                final_allocations[i][j] = integral_allocations[i][j];

@@ -131,10 +131,7 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
     //Attention: spendPerItem wird bei jeder iteration iter wieder auf 0 gesetzt, warum?
     // => weil keine Referenz (&) übergeben wurde von spendPerItem ...
 
- /*
-    //TODO:was macht count?
-    int count = 0;
-*/
+
     //das ist die neue Teil des Guts, welches der Bidder (welcher gerade an der Reihe ist) erwerben möchte
     double newShare = 0.0;
 
@@ -144,8 +141,7 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
         //spending-graph edges are a subset of the mbb-graph edges
         //vector Aufbau bspw: bidder 1: (mbb, 0), (mbb,1), ...
 
-        //ATTENTION count
-        //count = count + 1;
+
 
         for (const myTuple &p: SortedMbbVec[iter]) {
 
@@ -162,16 +158,6 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
             //newShare = bidders[iter].budget/newPrices[p.second];
 
 
-            //TODO: alte lösung
-         /*   if (count <= num_bidders) {
-                newShare = double((bidders[iter].budget / double(num_goods)) / newPrices[p.second]);
-            }
-
-            if (count > num_bidders) {
-                newShare = double(((bidders[iter].budget / double(num_goods)) * bidders[iter].valuation[p.second]) /
-                                  newPrices[p.second]);
-
-            }*/
 
 
             if (bidders[iter].budget == 0) {
@@ -242,7 +228,7 @@ vector<int> interestsGood(int num_bidders, int num_goods, vector<vector<myTuple>
 }
 
 
-vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> initPrices,
+vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidders, vector<double> &initPrices,
                             double spendingRestriction, vector<double> &spendPerItem, vector<double> &quantItem,
                             vector<vector<myTuple>> &SortedMbbVec,
                             vector<int> &interGood,
@@ -291,7 +277,6 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
             update[i][j] = double(bidders[i].valuation[j] * bidders[i].spent[j]) / newPrices[j];
 
             //Attention for debugging
-            //TODO: checke, ob newPrices = nan ist
             if(isnan(update[i][j])){
                 cout << "update isnan";
                 rdResult << "update isnan";
@@ -682,12 +667,11 @@ int main() {
                 //budget
                 //initBudget[k] = (random_number(low_Budget, up_Budget));
                 bidders[k].budget = initBudget[k];
-                //= 1;
-                //bidders[k].budget = budgetAgent;
 
-                //attention 8.1.21: *10
+
+                /*//attention 8.1.21: *10
                 bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods*10);
-
+*/
 
                 //attention 8.1.21:
                 //setzen spendVec pro Overall Iteration wieder auf 0
@@ -695,6 +679,11 @@ int main() {
                     spendVec[k][j] = 0.0;
                     allocVec[k][j] = 0.0;
                     update [k][j] = 0.0;
+
+                    bidders[k].spent[j] = bidders[0].budget / (double) num_goods*10;
+
+
+
                 }
 
 
@@ -725,13 +714,20 @@ int main() {
              * HIER KÖNNEN MEHRERE EIGENSCHAFTEN STEHEN
              */
 
-            /*//quantity per item
+/*
+            //spending restriction
+            cout << "What is the spending restriction?: ";
+            cin >> spendingRestriction;*/
+
+
+
+
+            //quantity per item
             cout << "Quantity per item: ";
             cin >> quant;
-            vector<double> quantItem(num_goods);
             for (int j = 0; j < num_goods; ++j) {
                 quantItem[j] = quant;
-            }*/
+            }
 
         }
 
