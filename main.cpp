@@ -17,6 +17,25 @@
 #include "rand_rounding.cpp"
 #include "rand_rounding.h"
 
+/* attention: hier wird der Code erklärt
+ * Was passiert in SRR main:
+ *   1) PR-Dynamics Preise werden pro iteration berechnet
+ *   2) in jeder iteration wird der mbb-graph und der spending-graph berechnet
+ *   3) diese graphen geben vor, welche Güter ein Bidder kaufen wird (möchte)
+ *   4) hieraus ergeben sich also seine allocations
+ *   5) diese allocations werden in rand_rounding.cpp gerundet und ausgegeben (mit der jeweiligen utility)
+ *   6) falls restrictions = 0, dann wird der normale PR-Dynamics algo ausgeführt (das passiert in mainPR_D.cpp)
+ *
+ *
+ *   Findings:
+ *   - es werden im best case NUR 50% der items auf dem markt verkauft (available items aller Güter ist max. 50 % am Ende)
+ *   - ich kann keine clearence des marktes (also auch kein Equilibrium erhalten), jedoch werden alle budgets
+ *     voll ausgegeben
+ *
+ *
+ */
+
+
 
 using namespace std;
 
@@ -266,8 +285,10 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
             if(isnan(update[i][j])){
                 cout << "update isnan";
                 rdResult << "update isnan";
-                exit(EXIT_FAILURE);
-                //return newPrices;
+                //Trick siebzehn
+                newPrices[1] = 999;
+                return newPrices;
+                //exit(EXIT_FAILURE);
             }
         }
     }
@@ -285,6 +306,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
             //Attention: hier wird eingestiegen, wenn update vector 0 (fast 0) ist (!)
             if (accumulate(update[i].begin(), update[i].end(), 0.0) <= 0.001) {
+
 
                 //debugging
                 /*cout << "update zero";
@@ -330,6 +352,7 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                 cout << "\n";
 
 
+                //Attention: warum hier aufruf von roundingSRE ??
                 //print to file "myfile" findet in rand_rounding.cpp statt
                 //Spending Restricted Equilibrium (SRE)
                 roundingSRE(num_bidders, num_goods, allocVec, quant, bidders, MaxUtility, spendingRestriction,
@@ -340,8 +363,10 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
                 rdResult << "\n";
                 rdResult << "update vector is zero";
                 rdResult << "\n";
-                //return newPrices;
-                exit(EXIT_FAILURE);
+                //Trick siebzehn
+                newPrices[1] = 999;
+                return newPrices;
+                //exit(EXIT_FAILURE);
                 //break;
             }
             bidders[i].spent[j] =
@@ -355,6 +380,8 @@ vector<double> currentPrice(int num_bidders, int num_goods, vector<Bidder> &bidd
 
 
 /* FUNKTIONSAUFRUFE */
+
+
 
     SortedMbbVec = mbbGraph(num_bidders, num_goods, bidders, newPrices, SortedMbbVec);
 
@@ -512,11 +539,11 @@ int main() {
 
     vector<double> initBudget(num_bidders);
 
-    double low_Budget = 3;
-    double up_Budget = 10;
+    double low_Budget = 30;
+    double up_Budget = 40;
 
     double low_Val = 0;
-    double up_Val = 7;
+    double up_Val = 10;
 
     for (int k = 0; k < num_bidders; ++k) {
         bidders[k].valuation.resize(num_goods);
@@ -548,7 +575,8 @@ int main() {
         bidders_PRD[k].budget = initBudget_PRD[k];
         //bidders[k].budget = budgetAgent;
 
-        bidders_PRD[k].spent.resize(num_goods, bidders_PRD[0].budget / (double) num_goods);
+        //attention 8.1.21: *10
+        bidders_PRD[k].spent.resize(num_goods, bidders_PRD[0].budget / (double) num_goods*10);
     }
 
 
@@ -631,6 +659,7 @@ int main() {
 
         if (iter > 0) {
 
+            //neue eigenschaften berechnen für nächste overall iteration
             for (int k = 0; k < num_bidders; ++k) {
                 //bidders[k].valuation.resize(num_goods);
                 //valuation pro Gut und Bidder
@@ -642,13 +671,29 @@ int main() {
                 //= 1;
                 //bidders[k].budget = budgetAgent;
 
-                bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods);
+                //attention 8.1.21: *10
+                bidders[k].spent.resize(num_goods, bidders[0].budget / (double) num_goods*10);
+
+                //attention 8.1.21:
+                //setzen spendVec pro Overall Iteration wieder auf 0
+                for (int j = 0; j < num_goods; ++j){
+                    spendVec[k][j] = 0.0;
+                }
+
+
             }
 
+            //zurücksetzen
             for (int j = 0; j < num_goods; ++j){
                 spendPerItem[j] = 0.0;
                 quantItem[j] = quant;
             }
+
+            //prices wieder zurücksetzen für currentPrices()
+            for (int j = 0; j < num_goods; ++j){
+                initPrices[j]=0.0;
+            }
+
 
 
             /*
@@ -693,6 +738,8 @@ int main() {
                                                     quantItem, SortedMbbVec, interGood, spendVec, update, initBudget,
                                                     allocVec, quant, num_iterations, allocVecOverall);
 
+            //falls update zero in currentPrice funktion
+            if(newPrices[1] == 999) break;
 
             //preisanpassung übernehmen für nächsten loop
             initPrices = newPrices;
@@ -783,6 +830,8 @@ int main() {
                 }
                 rdResult << "\n";
 
+                //falls quantities zero
+                int flag;
 
                 roundingSRE(num_bidders, num_goods, allocVec, quant, bidders, utilityRound, spendingRestriction,
                             num_iterations, newPrices);
@@ -863,6 +912,8 @@ int main() {
                 //cout << "last, but not least";
 
                 //print spending vector
+                //attention: Bidder 0 spends 32.5 | 8.89 | 44.9 | 5.21 | 11.1 | 13.5 |, but budget is: 31 only (?!)
+                // gelöst 8.1.21
                 for (int i = 0; i < num_bidders; ++i) {
                     utility = 0.0;
                     cout << "Bidder " << i << " spends: " << "\n";
