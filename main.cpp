@@ -131,7 +131,10 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
     //Attention: spendPerItem wird bei jeder iteration iter wieder auf 0 gesetzt, warum?
     // => weil keine Referenz (&) übergeben wurde von spendPerItem ...
 
+    //TODO:was macht count?
     int count = 0;
+
+    //das ist die neue Teil des Guts, welches der Bidder (welcher gerade an der Reihe ist) erwerben möchte
     double newShare = 0.0;
 
     //spending graph erzeugen
@@ -148,7 +151,7 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
             int numGood = p.second;
 
 
-            //Attention: das stimmt doch nicht !?
+            //TODO: das stimmt doch nicht !?
             //new share of good
             if (count <= num_bidders) {
                 newShare = double((bidders[iter].budget / double(num_goods)) / newPrices[p.second]);
@@ -166,10 +169,7 @@ vector<vector<double>> spendingGraph(int num_bidders, int num_goods, vector<Bidd
             }
 
 
-            //TODO: nach dem ersten Durchlauf (iter = 1) gehts in die folgende if-Abfrage nicht mehr rein (!)
 
-
-            //Attention: irgendwie funktioniert das nicht mit dem allocVec ... dieser darf maximal so groß sein wie quantItem ...
             if ((double(spendPerItem[p.second] + (newShare * newPrices[p.second])) <= spendingRestriction) &&
                 quantItem[p.second] - newShare >= 0.0 &&
                 bidders[iter].budget != 0.0 &&
@@ -519,7 +519,7 @@ int main() {
     cout << "Number iterations: ";
     cin >> num_iterations;
 
-    //Attention: iterations overall
+    //Attention: iterations overall (Gesamtexperiment wdh)
     int num_iter_exp;
     cout << "Number iterations overall: ";
     cin >> num_iter_exp;
@@ -539,11 +539,11 @@ int main() {
 
     vector<double> initBudget(num_bidders);
 
-    double low_Budget = 30;
-    double up_Budget = 40;
+    double low_Budget = 40;
+    double up_Budget = 70;
 
     double low_Val = 0;
-    double up_Val = 10;
+    double up_Val = 20;
 
     for (int k = 0; k < num_bidders; ++k) {
         bidders[k].valuation.resize(num_goods);
@@ -654,19 +654,27 @@ int main() {
 
     }
 
+
+    /* ATTENTION
+     * ATTENTION: Hier beginnen die Iterations (außen: für Gesamtexperiment, innen: für PR-Dynamics)
+     * ATTENTION
+     */
+
+
     //FOR SCHLEIFE FÜR ANZAHL WIEDERHOLUNGEN DES GESAMTEXPERIMENTS
     for (int iter = 0; iter < num_iter_exp; iter++) {
 
+        //Attention: zurücksetzen der Werte pro Gesamtexperiment-Wdh.
         if (iter > 0) {
 
-            //neue eigenschaften berechnen für nächste overall iteration
+            //Attention: gleiche Eigenschaften wie zu beginn wiederherstellen
             for (int k = 0; k < num_bidders; ++k) {
                 //bidders[k].valuation.resize(num_goods);
                 //valuation pro Gut und Bidder
-                for (auto &v: bidders[k].valuation) v = (random_number(low_Val, up_Val));
+                //for (auto &v: bidders[k].valuation) v = (random_number(low_Val, up_Val));
 
                 //budget
-                initBudget[k] = (random_number(low_Budget, up_Budget));
+                //initBudget[k] = (random_number(low_Budget, up_Budget));
                 bidders[k].budget = initBudget[k];
                 //= 1;
                 //bidders[k].budget = budgetAgent;
@@ -678,6 +686,14 @@ int main() {
                 //setzen spendVec pro Overall Iteration wieder auf 0
                 for (int j = 0; j < num_goods; ++j){
                     spendVec[k][j] = 0.0;
+                    allocVec[k][j] = 0.0;
+                    update [k][j] = 0.0;
+                }
+
+
+                for (int j = 0; j < num_goods; ++j){
+                SortedMbbVec[k][j].first = 0.0;
+                SortedMbbVec[k][j].second = 0;
                 }
 
 
@@ -692,6 +708,8 @@ int main() {
             //prices wieder zurücksetzen für currentPrices()
             for (int j = 0; j < num_goods; ++j){
                 initPrices[j]=0.0;
+                allocVecOverall[j] = 0.0;
+                interGood[j] = 0.0;
             }
 
 
@@ -896,6 +914,7 @@ int main() {
                 for (int i = 0; i < num_goods; ++i) {
                     cout << "Good " << i << " costs: " << newPrices[i] << " (PR-D: " << initPrices[i] << " )" << "\n";
                     myfile << "Good " << i << " costs: " << newPrices[i] << " (PR-D: " << initPrices[i] << " )" << "\n";
+                    rdResult << "Good " << i << " costs: " << newPrices[i] << " (PR-D: " << initPrices[i] << " )" << "\n";
                 }
                 cout << endl;
                 myfile << endl;
